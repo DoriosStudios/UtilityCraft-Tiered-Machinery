@@ -1,0 +1,29 @@
+tile.utilitycraft:basic_crusher.name=§eBasic Crusher \n §7 Processing Slots: 3\n §7 Rate: 20 DE/t\n §7 Energy Cap: 192k DE
+tile.utilitycraft:advanced_crusher.name=§cAdvanced Crusher \n §7 Processing Slots: 5\n §7 Rate: 20 DE/t\n §7 Energy Cap: 320k DE
+tile.utilitycraft:expert_crusher.name=§bExpert Crusher \n §7 Processing Slots: 7\n §7 Rate: 20 DE/t\n §7 Energy Cap: 448k DE
+tile.utilitycraft:ultimate_crusher.name=§8Ultimate Crusher \n §7 Processing Slots: 9\n §7 Rate: 20 DE/t\n §7 Energy Cap: 576k DE
+
+tile.utilitycraft:basic_electro_press.name=§eBasic Electro Press \n §7 Processing Slots: 3\n §7 Rate: 20 DE/t\n §7 Energy Cap: 192k DE
+tile.utilitycraft:advanced_electro_press.name=§cAdvanced Electro Press \n §7 Processing Slots: 5\n §7 Rate: 20 DE/t\n §7 Energy Cap: 320k DE
+tile.utilitycraft:expert_electro_press.name=§bExpert Electro Press \n §7 Processing Slots: 7\n §7 Rate: 20 DE/t\n §7 Energy Cap: 448k DE
+tile.utilitycraft:ultimate_electro_press.name=§8Ultimate Electro Press \n §7 Processing Slots: 9\n §7 Rate: 20 DE/t\n §7 Energy Cap: 576k DE
+
+tile.utilitycraft:basic_incinerator.name=§eBasic Incinerator \n §7 Processing Slots: 3\n §7 Rate: 20 DE/t\n §7 Energy Cap: 192k DE
+tile.utilitycraft:advanced_incinerator.name=§cAdvanced Incinerator \n §7 Processing Slots: 5\n §7 Rate: 20 DE/t\n §7 Energy Cap: 320k DE
+tile.utilitycraft:expert_incinerator.name=§bExpert Incinerator \n §7 Processing Slots: 7\n §7 Rate: 20 DE/t\n §7 Energy Cap: 448k DE
+tile.utilitycraft:ultimate_incinerator.name=§8Ultimate Incinerator \n §7 Processing Slots: 9\n §7 Rate: 20 DE/t\n §7 Energy Cap: 576k DE
+
+entity.utilitycraft:basic_incinerator.name=Basic Incinerator
+entity.utilitycraft:advanced_incinerator.name=Advanced Incinerator
+entity.utilitycraft:expert_incinerator.name=Expert Incinerator
+entity.utilitycraft:ultimate_incinerator.name=Ultimate Incinerator
+
+entity.utilitycraft:basic_crusher.name=Basic Crusher
+entity.utilitycraft:advanced_crusher.name=Advanced Crusher
+entity.utilitycraft:expert_crusher.name=Expert Crusher
+entity.utilitycraft:ultimate_crusher.name=Ultimate Crusher
+
+entity.utilitycraft:basic_electro_press.name=Basic Electro Press
+entity.utilitycraft:advanced_electro_press.name=Advanced Electro Press
+entity.utilitycraft:expert_electro_press.name=Expert Electro Press
+entity.utilitycraft:ultimate_electro_press.name=Ultimate Electro Press

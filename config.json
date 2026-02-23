@@ -1,0 +1,44 @@
+{
+	"type": "minecraftBedrock",
+	"name": "UtilityCraft: Tiered Machinery",
+	"namespace": "utilitycraft",
+	"authors": [
+		"Dorios Studios"
+	],
+	"targetVersion": "1.21.130",
+	"description": "1.0.0 §aRequires UtilityCraft 3.3.6+",
+	"experimentalGameplay": {
+		"upcomingCreatorFeatures": false,
+		"experimentalCreatorCameraFeatures": false,
+		"enableGameTestFramework": false,
+		"renderDragonFeatures": false,
+		"educationEdition": false
+	},
+	"bdsProject": false,
+	"packs": {
+		"behaviorPack": "./BP",
+		"resourcePack": "./RP"
+	},
+	"worlds": [
+		"./worlds/*"
+	],
+	"compiler": {
+		"plugins": [
+			"generatorScripts",
+			"typeScript",
+			"entityIdentifierAlias",
+			"customEntityComponents",
+			"customItemComponents",
+			"customBlockComponents",
+			"customCommands",
+			"moLang",
+			"formatVersionCorrection",
+			[
+				"simpleRewrite",
+				{
+					"packName": "UtilityCraft Tiered Machinery"
+				}
+			]
+		]
+	}
+}

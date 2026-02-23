@@ -1,0 +1,44 @@
+{
+    "format_version": "1.20.80",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "utilitycraft:ultimate_crusher"
+        },
+        "tags": [
+            "utilitycraft_workbench"
+        ],
+        "key": {
+            "A": {
+                "item": "utilitycraft:steel_plate"
+            },
+            "B": {
+                "item": "utilitycraft:expert_crusher"
+            },
+            "C": {
+                "item": "utilitycraft:netherite_plate"
+            },
+            "D": {
+                "item": "minecraft:redstone_block"
+            },
+            "E": {
+                "item": "utilitycraft:ultimate_chip"
+            }
+        },
+        "pattern": [
+            "AEA",
+            "EBE",
+            "CDC"
+        ],
+        "result": {
+            "item": "utilitycraft:ultimate_crusher"
+        },
+        "unlock": [
+            {
+                "item": "minecraft:redstone_block"
+            },
+            {
+                "item": "utilitycraft:ultimate_chip"
+            }
+        ]
+    }
+}

@@ -1,0 +1,45 @@
+{
+	"format_version": 2,
+	"metadata": {
+		"product_type": "addon",
+		"authors": [
+			"Dorios Studios"
+		]
+	},
+	"header": {
+		"name": "UtilityCraft: Tiered Machinery",
+		"description": "1.0.0 §aRequires UtilityCraft 3.3.6+",
+		"min_engine_version": [
+			1,
+			20,
+			80
+		],
+		"uuid": "e8ee4df4-1ae3-4669-85ef-bfb77520eb30",
+		"version": [
+			1,
+			0,
+			0
+		]
+	},
+	"modules": [
+		{
+			"type": "resources",
+			"uuid": "6a98ac0c-dbf0-4d95-a429-46aa0f148d9c",
+			"version": [
+				1,
+				0,
+				0
+			]
+		}
+	],
+	"dependencies": [
+		{
+			"uuid": "c40c2cf0-70b6-4558-84d6-7affdd24a3a8",
+			"version": [
+				1,
+				0,
+				0
+			]
+		}
+	]
+}

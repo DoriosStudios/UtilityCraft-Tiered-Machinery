@@ -1,0 +1,64 @@
+{
+	"format_version": 2,
+	"metadata": {
+		"product_type": "addon",
+		"authors": [
+			"Dorios Studios"
+		]
+	},
+	"header": {
+		"name": "UtilityCraft: Tiered Machinery",
+		"description": "1.0.0 §aRequires UtilityCraft 3.3.6+",
+		"min_engine_version": [
+			1,
+			21,
+			120
+		],
+		"uuid": "c40c2cf0-70b6-4558-84d6-7affdd24a3a8",
+		"version": [
+			1,
+			0,
+			0
+		]
+	},
+	"modules": [
+		{
+			"type": "data",
+			"uuid": "29f70517-4818-4517-8fa6-010d5e13d7b6",
+			"version": [
+				1,
+				0,
+				0
+			]
+		},
+		{
+			"type": "script",
+			"language": "javascript",
+			"uuid": "dcdbe744-44bd-49b4-b609-4315f37d019f",
+			"entry": "scripts/main.js",
+			"version": [
+				3,
+				2,
+				0
+			]
+		}
+	],
+	"dependencies": [
+		{
+			"uuid": "e8ee4df4-1ae3-4669-85ef-bfb77520eb30",
+			"version": [
+				1,
+				0,
+				0
+			]
+		},
+		{
+			"module_name": "@minecraft/server",
+			"version": "2.4.0"
+		},
+		{
+			"module_name": "@minecraft/server-ui",
+			"version": "2.0.0"
+		}
+	]
+}

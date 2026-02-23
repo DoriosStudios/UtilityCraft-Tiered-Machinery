@@ -1,0 +1,8 @@
+{
+    "ui_defs": [
+        "ui/basic_simple_machine.json",
+        "ui/advanced_simple_machine.json",
+        "ui/expert_simple_machine.json",
+        "ui/ultimate_simple_machine.json"
+    ]
+}

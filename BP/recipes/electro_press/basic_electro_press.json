@@ -1,0 +1,41 @@
+{
+    "format_version": "1.20.80",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "utilitycraft:basic_electro_press"
+        },
+        "tags": [
+            "utilitycraft_workbench"
+        ],
+        "key": {
+            "A": {
+                "item": "utilitycraft:steel_ingot"
+            },
+            "B": {
+                "item": "utilitycraft:electro_press"
+            },
+            "C": {
+                "item": "iron_ingot"
+            },
+            "D": {
+                "item": "minecraft:redstone_block"
+            },
+            "E": {
+                "item": "utilitycraft:basic_chip"
+            }
+        },
+        "pattern": [
+            "AEA",
+            "EBE",
+            "CDC"
+        ],
+        "result": {
+            "item": "utilitycraft:basic_electro_press"
+        },
+        "unlock": [
+            {
+                "item": "minecraft:redstone_block"
+            }
+        ]
+    }
+}

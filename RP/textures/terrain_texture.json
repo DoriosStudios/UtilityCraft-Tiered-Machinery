@@ -1,0 +1,80 @@
+{
+	"num_mip_levels": 4,
+	"padding": 8,
+	"resource_pack_name": "UtilityCraft-Tiered-Machines",
+	"texture_name": "atlas.terrain",
+	"texture_data": {
+		"utilitycraft_basic_crusher_on": {
+			"textures": "textures/blocks/crusher/basic_crusher_on"
+		},
+		"utilitycraft_basic_crusher_off": {
+			"textures": "textures/blocks/crusher/basic_crusher_off"
+		},
+		"utilitycraft_advanced_crusher_on": {
+			"textures": "textures/blocks/crusher/advanced_crusher_on"
+		},
+		"utilitycraft_advanced_crusher_off": {
+			"textures": "textures/blocks/crusher/advanced_crusher_off"
+		},
+		"utilitycraft_expert_crusher_on": {
+			"textures": "textures/blocks/crusher/expert_crusher_on"
+		},
+		"utilitycraft_expert_crusher_off": {
+			"textures": "textures/blocks/crusher/expert_crusher_off"
+		},
+		"utilitycraft_ultimate_crusher_on": {
+			"textures": "textures/blocks/crusher/ultimate_crusher_on"
+		},
+		"utilitycraft_ultimate_crusher_off": {
+			"textures": "textures/blocks/crusher/ultimate_crusher_off"
+		},
+		"utilitycraft_basic_electro_press_on": {
+			"textures": "textures/blocks/electro_press/basic_electro_press_on"
+		},
+		"utilitycraft_basic_electro_press_off": {
+			"textures": "textures/blocks/electro_press/basic_electro_press_off"
+		},
+		"utilitycraft_advanced_electro_press_on": {
+			"textures": "textures/blocks/electro_press/advanced_electro_press_on"
+		},
+		"utilitycraft_advanced_electro_press_off": {
+			"textures": "textures/blocks/electro_press/advanced_electro_press_off"
+		},
+		"utilitycraft_expert_electro_press_on": {
+			"textures": "textures/blocks/electro_press/expert_electro_press_on"
+		},
+		"utilitycraft_expert_electro_press_off": {
+			"textures": "textures/blocks/electro_press/expert_electro_press_off"
+		},
+		"utilitycraft_ultimate_electro_press_on": {
+			"textures": "textures/blocks/electro_press/ultimate_electro_press_on"
+		},
+		"utilitycraft_ultimate_electro_press_off": {
+			"textures": "textures/blocks/electro_press/ultimate_electro_press_off"
+		},
+		"utilitycraft_basic_incinerator_on": {
+			"textures": "textures/blocks/incinerator/basic_incinerator_on"
+		},
+		"utilitycraft_basic_incinerator_off": {
+			"textures": "textures/blocks/incinerator/basic_incinerator_off"
+		},
+		"utilitycraft_advanced_incinerator_on": {
+			"textures": "textures/blocks/incinerator/advanced_incinerator_on"
+		},
+		"utilitycraft_advanced_incinerator_off": {
+			"textures": "textures/blocks/incinerator/advanced_incinerator_off"
+		},
+		"utilitycraft_expert_incinerator_on": {
+			"textures": "textures/blocks/incinerator/expert_incinerator_on"
+		},
+		"utilitycraft_expert_incinerator_off": {
+			"textures": "textures/blocks/incinerator/expert_incinerator_off"
+		},
+		"utilitycraft_ultimate_incinerator_on": {
+			"textures": "textures/blocks/incinerator/ultimate_incinerator_on"
+		},
+		"utilitycraft_ultimate_incinerator_off": {
+			"textures": "textures/blocks/incinerator/ultimate_incinerator_off"
+		}
+	}
+}
