@@ -27,3 +27,7 @@ entity.utilitycraft:basic_electro_press.name=Basic Electro Press
 entity.utilitycraft:advanced_electro_press.name=Advanced Electro Press
 entity.utilitycraft:expert_electro_press.name=Expert Electro Press
 entity.utilitycraft:ultimate_electro_press.name=Ultimate Electro Press
+
+dorios:itemGroup.name.crusher=Crusher Tiers
+dorios:itemGroup.name.electro_press=Electro Press Tiers
+dorios:itemGroup.name.incinerator=Incinerator Tiers

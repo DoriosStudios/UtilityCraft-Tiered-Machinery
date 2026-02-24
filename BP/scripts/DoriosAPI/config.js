@@ -50,10 +50,10 @@ export const addonData = {
     name: "UtilityCraft: Tiered Machines",
     author: "Dorios Studios",
     identifier: "uc_tiered_machines",
-    version: "1.0.0",
+    version: "1.0.1",
     dependencies: {
         "utilitycraft": {
-            version: "3.3.5",  // Required version
+            version: "3.3.6",  // Required version
             name: "UtilityCraft",  // Custom name to display
             warning: "Please update to the latest version."  // Custom warning message
         }

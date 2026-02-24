@@ -1,0 +1,58 @@
+{
+    "format_version": "1.21.60",
+    "minecraft:crafting_items_catalog": {
+        "categories": [
+            {
+                "category_name": "construction",
+                "groups": [
+                    {
+                        "group_identifier": {
+                            "icon": "utilitycraft:advanced_crusher",
+                            "name": "dorios:itemGroup.name.crusher"
+                        },
+                        "items": [
+                            "utilitycraft:basic_crusher",
+                            "utilitycraft:advanced_crusher",
+                            "utilitycraft:expert_crusher",
+                            "utilitycraft:ultimate_crusher"
+                        ]
+                    }
+                ]
+            },
+            {
+                "category_name": "construction",
+                "groups": [
+                    {
+                        "group_identifier": {
+                            "icon": "utilitycraft:advanced_electro_press",
+                            "name": "dorios:itemGroup.name.electro_press"
+                        },
+                        "items": [
+                            "utilitycraft:basic_electro_press",
+                            "utilitycraft:advanced_electro_press",
+                            "utilitycraft:expert_electro_press",
+                            "utilitycraft:ultimate_electro_press"
+                        ]
+                    }
+                ]
+            },
+            {
+                "category_name": "construction",
+                "groups": [
+                    {
+                        "group_identifier": {
+                            "icon": "utilitycraft:advanced_incinerator",
+                            "name": "dorios:itemGroup.name.incinerator"
+                        },
+                        "items": [
+                            "utilitycraft:basic_incinerator",
+                            "utilitycraft:advanced_incinerator",
+                            "utilitycraft:expert_incinerator",
+                            "utilitycraft:ultimate_incinerator"
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
