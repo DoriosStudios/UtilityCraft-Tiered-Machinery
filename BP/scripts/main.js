@@ -1,2 +1,3 @@
 import "./DoriosAPI/index.js";
-import "./machinery/main.js";
+import "./DoriosCore/index.js";
+import "./machinery/index.js";

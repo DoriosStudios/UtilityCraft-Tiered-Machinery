@@ -1,4 +1,4 @@
-import { Machine, Energy } from '../DoriosMachinery/core.js'
+import { Machine, EnergyStorage } from 'DoriosCore/index.js'
 import { crusherRecipes } from "../../config/recipes/crusher.js";
 import { furnaceRecipes } from "../../config/recipes/furnace.js";
 import { pressRecipes } from "../../config/recipes/press.js";
@@ -20,11 +20,11 @@ DoriosAPI.register.blockComponent('complex_machine', {
      * @param {{ params: MachineSettings }} ctx
      */
     beforeOnPlayerPlace(e, { params: settings }) {
-        Machine.spawnMachineEntity(e, settings, () => {
-            const machine = new Machine(e.block, settings, true);
-            machine.setEnergyCost(settings.machine.energy_cost);
-            machine.displayProgress()
-            // Item Labels
+        const config = settings
+        config.entity.input_range = settings.entity.input_slots
+        config.entity.output_range = settings.entity.output_slots
+        Machine.spawnEntity(e, config, () => {
+            const machine = new Machine(e.block, config, true);
             machine.entity.setItem(1, 'utilitycraft:arrow_down_0', 1, " ")
             machine.entity.setItem(2, 'utilitycraft:arrow_down_0', 1, " ")
             // Progress Bars
@@ -42,7 +42,6 @@ DoriosAPI.register.blockComponent('complex_machine', {
      * @param {{ params: MachineSettings }} ctx
      */
     onTick(e, { params: settings }) {
-        if (!worldLoaded) return;
         const machine = new Machine(e.block, settings);
         if (!machine.valid) return
 
@@ -79,9 +78,9 @@ DoriosAPI.register.blockComponent('complex_machine', {
                 if (slotData.on) on = true
                 // Progress Handling
                 if (slotData.resetProgress) {
-                    machine.setProgress(0, PROGRESS_SLOTS[index], PROGRESS_TYPE, true, index)
+                    machine.setProgress(0, { slot: PROGRESS_SLOTS[index], type: PROGRESS_TYPE, index: index })
                 } else {
-                    machine.displayProgress(PROGRESS_SLOTS[index], PROGRESS_TYPE, index)
+                    machine.displayProgress({ slot: PROGRESS_SLOTS[index], type: PROGRESS_TYPE, index: index })
                 }
                 // Recipe label
                 const recipe = slotData.recipe
@@ -115,14 +114,14 @@ DoriosAPI.register.blockComponent('complex_machine', {
             "",
             `§aSpeed §7x${boosts.speed.toFixed(2)}`,
             `§aEfficiency §7${((1 / boosts.consumption) * 100).toFixed(0)}%%`,
-            `§aCost §7${Energy.formatEnergyToText(machine.getEnergyCost() * boosts.consumption)}`,
+            `§aCost §7${EnergyStorage.formatEnergyToText(machine.getEnergyCost() * boosts.consumption)}`,
             "",
             `§r§eEnergy Information`,
             "",
             `§bPercentage §f${Math.floor(energy.getPercent())}%%`,
-            `§bStored §f${Energy.formatEnergyToText(energy.get())}`,
-            `§bCapacity §f${Energy.formatEnergyToText(energy.cap)}`,
-            `§bRate §f${Energy.formatEnergyToText(Math.floor(machine.baseRate))}/t`,
+            `§bStored §f${EnergyStorage.formatEnergyToText(energy.get())}`,
+            `§bCapacity §f${EnergyStorage.formatEnergyToText(energy.cap)}`,
+            `§bRate §f${EnergyStorage.formatEnergyToText(Math.floor(machine.baseRate))}/t`,
         ];
 
         machine.setLabel(infoLabel.join('\n'), 1)
@@ -177,7 +176,7 @@ DoriosAPI.register.blockComponent('complex_machine', {
  * }} Result object describing the state of this processing channel after execution.
  */
 function processSlot(machine, slotConfig, recipes, index) {
-    const inv = machine.inv;
+    const inv = machine.container;
     const { input_slot, output_slot } = slotConfig
 
     // Get the input slot (slot 3 in this case)

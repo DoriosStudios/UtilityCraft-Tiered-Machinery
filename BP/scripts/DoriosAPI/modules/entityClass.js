@@ -85,12 +85,12 @@ const entityExtensions = {
             ? new ItemStack(item, amount)
             : item;
         if (name) itemStack.nameTag = name
-        // try {
-        inv.setItem(slot, itemStack);
-        return true;
-        // } catch {
-        //     return false;
-        // }
+        try {
+            inv.setItem(slot, itemStack);
+            return true;
+        } catch {
+            return false;
+        }
     },
 
     /**
