@@ -16,18 +16,12 @@
         "$item_collection_name": "container_items",
         "controls": [
             {
-                "chest_label@chest.chest_label": {
-                    "offset": [
-                        10,
-                        0
-                    ]
-                }
+                "machine_name@uc.machine_name": {}
             },
             {
-                "energy_bar@machineryCommon.vertical_single": {
-                    "$is_energy": true,
+                "energy_bar@uc.energy_bar": {
                     "$has_bg": true,
-                    "collection_index": 0,
+                    "$collection_index": 0,
                     "offset": [
                         102,
                         -13
@@ -35,10 +29,10 @@
                 }
             },
             {
-                "panel@machineryCommon.side_panel": {}
+                "panel@uc.machine_side_panel": {}
             },
             {
-                "item_label@machineryCommon.item_label": {
+                "item_label@uc.text_label": {
                     "collection_index": 1,
                     "anchor_from": "top_left",
                     "anchor_to": "top_left",
@@ -54,7 +48,7 @@
                 }
             },
             {
-                "item_label@machineryCommon.item_label": {
+                "item_label@uc.text_label": {
                     "collection_index": 2,
                     "anchor_from": "top_left",
                     "anchor_to": "top_left",
@@ -75,7 +69,7 @@
                     "anchor_to": "top_middle",
                     "offset": [
                         -14,
-                        10
+                        9
                     ],
                     "collection_index": 3
                 }
@@ -86,7 +80,7 @@
                     "anchor_to": "top_middle",
                     "offset": [
                         10,
-                        10
+                        9
                     ],
                     "collection_index": 4
                 }
@@ -97,13 +91,13 @@
                     "anchor_to": "top_middle",
                     "offset": [
                         34,
-                        10
+                        9
                     ],
                     "collection_index": 5
                 }
             },
             {
-                "upgrades@machineryCommon.vertical_interactive": {
+                "upgrades@uc.slot_stack_vertical": {
                     "$has_bg": true,
                     "$collection_index_first": 6,
                     "$collection_index_second": 7,
@@ -115,34 +109,34 @@
                 }
             },
             {
-                "machinery@common_machines.machinery": {
+                "machinery@uc.progress_display": {
                     "anchor_from": "top_middle",
                     "anchor_to": "top_middle",
                     "offset": [
                         -14,
-                        28
+                        22
                     ],
                     "collection_index": 8
                 }
             },
             {
-                "machinery@common_machines.machinery": {
+                "machinery@uc.progress_display": {
                     "anchor_from": "top_middle",
                     "anchor_to": "top_middle",
                     "offset": [
                         10,
-                        28
+                        22
                     ],
                     "collection_index": 9
                 }
             },
             {
-                "machinery@common_machines.machinery": {
+                "machinery@uc.progress_display": {
                     "anchor_from": "top_middle",
                     "anchor_to": "top_middle",
                     "offset": [
                         34,
-                        28
+                        22
                     ],
                     "collection_index": 10
                 }
@@ -153,7 +147,7 @@
                     "anchor_to": "top_middle",
                     "offset": [
                         -14,
-                        46
+                        51
                     ],
                     "collection_index": 11
                 }
@@ -164,7 +158,7 @@
                     "anchor_to": "top_middle",
                     "offset": [
                         10,
-                        46
+                        51
                     ],
                     "collection_index": 12
                 }
@@ -175,7 +169,7 @@
                     "anchor_to": "top_middle",
                     "offset": [
                         34,
-                        46
+                        51
                     ],
                     "collection_index": 13
                 }

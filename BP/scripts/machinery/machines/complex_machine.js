@@ -10,7 +10,7 @@ const UTILITYCRAFT_RECIPES = {
 }
 
 const DEFAULT_COST = 800
-const PROGRESS_TYPE = "arrow_down"
+const PROGRESS_TYPE = "progress_down_big_bar"
 
 DoriosAPI.register.blockComponent('complex_machine', {
     /**
@@ -25,12 +25,12 @@ DoriosAPI.register.blockComponent('complex_machine', {
         config.entity.output_range = settings.entity.output_slots
         Machine.spawnEntity(e, config, () => {
             const machine = new Machine(e.block, config, true);
-            machine.entity.setItem(1, 'utilitycraft:arrow_down_0', 1, " ")
-            machine.entity.setItem(2, 'utilitycraft:arrow_down_0', 1, " ")
+            machine.entity.setItem(1, 'utilitycraft:progress_down_big_bar_00', 1, " ")
+            machine.entity.setItem(2, 'utilitycraft:progress_down_big_bar_00', 1, " ")
             // Progress Bars
             const PROGRESS_SLOTS = expandRange(settings.entity.progress_slots)
             PROGRESS_SLOTS.forEach(slot => {
-                machine.entity.setItem(slot, 'utilitycraft:arrow_down_0')
+                machine.entity.setItem(slot, 'utilitycraft:progress_down_big_bar_00')
             })
         });
     },

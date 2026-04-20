@@ -1,7 +1,8 @@
-import { ItemStack, system, world } from "@minecraft/server";
-import { EnergyStorage } from "../machinery/energyStorage.js"
-import { FluidStorage } from "../machinery/fluidStorage.js"
-import * as Constants from "../constants";
+import { ItemStack, system } from "@minecraft/server";
+import * as GlobalConstants from "../constants.js";
+import { EnergyStorage } from "../machinery/energyStorage.js";
+import { FluidStorage } from "../machinery/fluidStorage.js";
+import * as Constants from "./constants.js";
 
 /**
  * Determines whether the current tick should execute machine logic.
@@ -18,7 +19,10 @@ import * as Constants from "../constants";
  * @returns {boolean} True if the current tick matches the configured processing interval.
  */
 export function shouldProcess() {
-  return (globalThis.tickCount % globalThis.tickSpeed == 0 && globalThis.worldLoaded);
+  return (
+    globalThis[GlobalConstants.GLOBAL_TICK_COUNT_KEY] % globalThis[GlobalConstants.GLOBAL_TICK_SPEED_KEY] === 0 &&
+    globalThis[GlobalConstants.GLOBAL_WORLD_LOADED_KEY]
+  );
 }
 
 /**
@@ -51,17 +55,67 @@ export function tryGetEntityFromBlock(block) {
   return block.dimension.getEntitiesAtBlockLocation(block.location)[0];
 }
 
-const configExample = {
-  entity: {
-    identifier: "utilitycraft:machine",
-    type: "",
-    name: "example",
-    inventory_size: 10,
-    input_range: [3, 6],
-    output_range: [7, 10]
-  },
-  spawn_offset: { x: 0, y: -0.2, z: 0 },
-};
+
+/**
+ * Attempts to resolve the block currently represented by a machine entity.
+ *
+ * Machine helper entities are spawned with a small offset, so the lookup uses
+ * floored coordinates to reach the owning block position.
+ *
+ * @param {import("@minecraft/server").Entity} entity The helper entity to inspect.
+ * @returns {import("@minecraft/server").Block | undefined} The block under the entity, if available.
+ */
+export function tryGetBlockFromEntity(entity) {
+  if (!entity?.dimension || !entity.location) {
+    return undefined;
+  }
+
+  return entity.dimension.getBlock({
+    x: Math.floor(entity.location.x),
+    y: Math.floor(entity.location.y),
+    z: Math.floor(entity.location.z),
+  });
+}
+
+/**
+ * Returns the block type id represented by a machine helper entity.
+ *
+ * Preference order:
+ * 1. Current block under the entity (keeps renamed/swapped machines accurate)
+ * 2. Persisted dynamic property written at spawn time
+ *
+ * @param {import("@minecraft/server").Entity} entity The helper entity to inspect.
+ * @returns {string | undefined} Represented block type id.
+ */
+export function getRepresentedBlockId(entity) {
+  const block = tryGetBlockFromEntity(entity);
+  if (typeof block?.typeId === "string" && block.typeId.length > 0 && block.typeId !== "minecraft:air") {
+    return block.typeId;
+  }
+
+  try {
+    const storedBlockId = entity?.getDynamicProperty?.(Constants.MACHINE_BLOCK_ID_PROPERTY_ID);
+    if (typeof storedBlockId === "string" && storedBlockId.trim().length > 0) {
+      return storedBlockId.trim();
+    }
+  } catch {
+    // Ignore dynamic property access failures.
+  }
+
+  return undefined;
+}
+
+function persistRepresentedBlockId(entity, blockId) {
+  if (!entity || typeof blockId !== "string" || blockId.length === 0) {
+    return;
+  }
+
+  try {
+    entity.setDynamicProperty(Constants.MACHINE_BLOCK_ID_PROPERTY_ID, blockId);
+  } catch {
+    // Ignore environments where the property is not registered yet.
+  }
+}
 
 /**
  * Spawns a UtilityCraft machine entity at the given block location
@@ -85,7 +139,7 @@ const configExample = {
  * @returns {import("@minecraft/server").Entity} The spawned entity.
  */
 export function spawnEntity(block, config) {
-  const { entity: entityData, spawn_offset = { x: 0, y: -0.25, z: 0 } } = config;
+  const { entity: entityData, spawn_offset = Constants.DEFAULT_MACHINE_SPAWN_OFFSET } = config;
   const dimension = block.dimension;
 
   const center = block.center();
@@ -95,14 +149,17 @@ export function spawnEntity(block, config) {
     z: center.z + spawn_offset.z,
   };
 
-  const identifier = entityData.identifier ?? Constants.DEFAULT_ENTITY_ID;
+  const identifier = entityData.identifier ?? GlobalConstants.DEFAULT_ENTITY_ID;
   const entity = dimension.spawnEntity(identifier, location);
 
   const inventorySize = entityData.inventory_size ?? 1;
-  entity.triggerEvent(`utilitycraft:inventory_${inventorySize}`);
+  try {
+    entity.triggerEvent(`utilitycraft:inventory_${inventorySize}`);
+  } catch { }
 
   const name = entityData.name ?? block.typeId.split(":")[1];
   entity.nameTag = `entity.utilitycraft:${name}.name`;
+  persistRepresentedBlockId(entity, block.typeId);
 
   // Normalize slot config independently
   const inputRange =
@@ -129,7 +186,9 @@ export function spawnEntity(block, config) {
 
   initializeEntity(entity);
 
-  entity.triggerEvent(`utilitycraft:${entityData.type ?? "machine"}`);
+  if (entityData.type) {
+    entity.triggerEvent(`utilitycraft:${entityData.type}`);
+  }
 
   return entity;
 }
@@ -180,7 +239,7 @@ export function registerSlotConfig(entity, config) {
 
   // Dorios internal config
   entity.runCommand(
-    `scriptevent dorios:special_container ${JSON.stringify(slotRegister)}`
+    `scriptevent ${Constants.SPECIAL_CONTAINER_EVENT_ID} ${JSON.stringify(slotRegister)}`
   );
 
   // AE2BE container registry
@@ -202,7 +261,7 @@ export function registerSlotConfig(entity, config) {
 
   // Item Ducts compatibility
   entity.runCommand(
-    `scriptevent item_ducts:register ${JSON.stringify({
+    `scriptevent ${Constants.ITEM_DUCTS_REGISTER_EVENT_ID} ${JSON.stringify({
       typeId: config.block_id,
       extractSlots: outputSlots,
       insertSlots: inputSlots
@@ -226,16 +285,16 @@ export function registerSlotConfig(entity, config) {
 export function updateAdjacentNetwork(block, permutationToPlace = block.permutation) {
   let { x, y, z } = block.location;
   system.runTimeout(() => {
-    if (permutationToPlace.hasTag("dorios:energy")) {
-      block.dimension.runCommand(`execute as @n run scriptevent dorios:updatePipes energy|[${x},${y},${z}]`);
+    if (permutationToPlace.hasTag(Constants.ENERGY_BLOCK_TAG)) {
+      block.dimension.runCommand(`execute as @n run scriptevent ${Constants.UPDATE_PIPES_EVENT_ID} energy|[${x},${y},${z}]`);
     }
 
-    if (permutationToPlace.hasTag("dorios:item")) {
-      block.dimension.runCommand(`execute as @n run scriptevent dorios:updatePipes item|[${x},${y},${z}]`);
+    if (permutationToPlace.hasTag(Constants.ITEM_BLOCK_TAG)) {
+      block.dimension.runCommand(`execute as @n run scriptevent ${Constants.UPDATE_PIPES_EVENT_ID} item|[${x},${y},${z}]`);
     }
 
-    if (permutationToPlace.hasTag("dorios:fluid")) {
-      block.dimension.runCommand(`execute as @n run scriptevent dorios:updatePipes fluid|[${x},${y},${z}]`);
+    if (permutationToPlace.hasTag(Constants.FLUID_BLOCK_TAG)) {
+      block.dimension.runCommand(`execute as @n run scriptevent ${Constants.UPDATE_PIPES_EVENT_ID} fluid|[${x},${y},${z}]`);
     }
   }, 2);
 }
@@ -293,8 +352,7 @@ export function dropAllItems(entity) {
 
     // Skip UI items
     let shouldContinue = false;
-    if (item.hasTag("utilitycraft:ui_element")) continue;
-    if (item.hasTag("utilitycraft:ui.element")) continue;
+    if (Constants.UI_ITEM_TAGS.some((tag) => item.hasTag(tag))) continue;
     item.getTags().forEach((tag) => {
       if (tag.includes("ui")) {
         shouldContinue = true;

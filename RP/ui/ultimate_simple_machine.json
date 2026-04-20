@@ -16,18 +16,12 @@
         "$item_collection_name": "container_items",
         "controls": [
             {
-                "chest_label@chest.chest_label": {
-                    "offset": [
-                        10,
-                        0
-                    ]
-                }
+                "machine_name@uc.machine_name": {}
             },
             {
-                "energy_bar@machineryCommon.vertical_single": {
-                    "$is_energy": true,
+                "energy_bar@uc.energy_bar": {
                     "$has_bg": true,
-                    "collection_index": 0,
+                    "$collection_index": 0,
                     "offset": [
                         102,
                         -13
@@ -35,10 +29,10 @@
                 }
             },
             {
-                "panel@machineryCommon.side_panel": {}
+                "panel@uc.machine_side_panel": {}
             },
             {
-                "item_label@machineryCommon.item_label": {
+                "item_label@uc.text_label": {
                     "collection_index": 1,
                     "anchor_from": "top_left",
                     "anchor_to": "top_left",
@@ -54,7 +48,7 @@
                 }
             },
             {
-                "item_label@machineryCommon.item_label": {
+                "item_label@uc.text_label": {
                     "collection_index": 2,
                     "anchor_from": "top_left",
                     "anchor_to": "top_left",
@@ -69,14 +63,13 @@
                     ]
                 }
             },
-            // INPUT ROW (9) — PEGADOS
             {
                 "item@common.container_item": {
                     "anchor_from": "top_middle",
                     "anchor_to": "top_middle",
                     "offset": [
                         -62,
-                        10
+                        9
                     ],
                     "collection_index": 3
                 }
@@ -87,7 +80,7 @@
                     "anchor_to": "top_middle",
                     "offset": [
                         -44,
-                        10
+                        9
                     ],
                     "collection_index": 4
                 }
@@ -98,7 +91,7 @@
                     "anchor_to": "top_middle",
                     "offset": [
                         -26,
-                        10
+                        9
                     ],
                     "collection_index": 5
                 }
@@ -109,7 +102,7 @@
                     "anchor_to": "top_middle",
                     "offset": [
                         -8,
-                        10
+                        9
                     ],
                     "collection_index": 6
                 }
@@ -120,7 +113,7 @@
                     "anchor_to": "top_middle",
                     "offset": [
                         10,
-                        10
+                        9
                     ],
                     "collection_index": 7
                 }
@@ -131,7 +124,7 @@
                     "anchor_to": "top_middle",
                     "offset": [
                         28,
-                        10
+                        9
                     ],
                     "collection_index": 8
                 }
@@ -142,7 +135,7 @@
                     "anchor_to": "top_middle",
                     "offset": [
                         46,
-                        10
+                        9
                     ],
                     "collection_index": 9
                 }
@@ -153,7 +146,7 @@
                     "anchor_to": "top_middle",
                     "offset": [
                         64,
-                        10
+                        9
                     ],
                     "collection_index": 10
                 }
@@ -164,14 +157,13 @@
                     "anchor_to": "top_middle",
                     "offset": [
                         82,
-                        10
+                        9
                     ],
                     "collection_index": 11
                 }
             },
-            // UPGRADES
             {
-                "upgrades@machineryCommon.vertical_interactive": {
+                "upgrades@uc.slot_stack_vertical": {
                     "$has_bg": true,
                     "$collection_index_first": 12,
                     "$collection_index_second": 13,
@@ -182,114 +174,112 @@
                     ]
                 }
             },
-            // PROGRESS ROW (9) — PEGADOS
             {
-                "machinery@common_machines.machinery": {
+                "machinery@uc.progress_display": {
                     "anchor_from": "top_middle",
                     "anchor_to": "top_middle",
                     "offset": [
                         -62,
-                        28
+                        22
                     ],
                     "collection_index": 14
                 }
             },
             {
-                "machinery@common_machines.machinery": {
+                "machinery@uc.progress_display": {
                     "anchor_from": "top_middle",
                     "anchor_to": "top_middle",
                     "offset": [
                         -44,
-                        28
+                        22
                     ],
                     "collection_index": 15
                 }
             },
             {
-                "machinery@common_machines.machinery": {
+                "machinery@uc.progress_display": {
                     "anchor_from": "top_middle",
                     "anchor_to": "top_middle",
                     "offset": [
                         -26,
-                        28
+                        22
                     ],
                     "collection_index": 16
                 }
             },
             {
-                "machinery@common_machines.machinery": {
+                "machinery@uc.progress_display": {
                     "anchor_from": "top_middle",
                     "anchor_to": "top_middle",
                     "offset": [
                         -8,
-                        28
+                        22
                     ],
                     "collection_index": 17
                 }
             },
             {
-                "machinery@common_machines.machinery": {
+                "machinery@uc.progress_display": {
                     "anchor_from": "top_middle",
                     "anchor_to": "top_middle",
                     "offset": [
                         10,
-                        28
+                        22
                     ],
                     "collection_index": 18
                 }
             },
             {
-                "machinery@common_machines.machinery": {
+                "machinery@uc.progress_display": {
                     "anchor_from": "top_middle",
                     "anchor_to": "top_middle",
                     "offset": [
                         28,
-                        28
+                        22
                     ],
                     "collection_index": 19
                 }
             },
             {
-                "machinery@common_machines.machinery": {
+                "machinery@uc.progress_display": {
                     "anchor_from": "top_middle",
                     "anchor_to": "top_middle",
                     "offset": [
                         46,
-                        28
+                        22
                     ],
                     "collection_index": 20
                 }
             },
             {
-                "machinery@common_machines.machinery": {
+                "machinery@uc.progress_display": {
                     "anchor_from": "top_middle",
                     "anchor_to": "top_middle",
                     "offset": [
                         64,
-                        28
+                        22
                     ],
                     "collection_index": 21
                 }
             },
             {
-                "machinery@common_machines.machinery": {
+                "machinery@uc.progress_display": {
                     "anchor_from": "top_middle",
                     "anchor_to": "top_middle",
                     "offset": [
                         82,
-                        28
+                        22
                     ],
                     "collection_index": 22
                 }
             },
-            // OUTPUT ROW (9) — PEGADOS
             {
                 "item@common.container_item": {
                     "anchor_from": "top_middle",
                     "anchor_to": "top_middle",
                     "offset": [
                         -62,
-                        46
+                        51
                     ],
                     "collection_index": 23
                 }
@@ -300,7 +290,7 @@
                     "anchor_to": "top_middle",
                     "offset": [
                         -44,
-                        46
+                        51
                     ],
                     "collection_index": 24
                 }
@@ -311,7 +301,7 @@
                     "anchor_to": "top_middle",
                     "offset": [
                         -26,
-                        46
+                        51
                     ],
                     "collection_index": 25
                 }
@@ -322,7 +312,7 @@
                     "anchor_to": "top_middle",
                     "offset": [
                         -8,
-                        46
+                        51
                     ],
                     "collection_index": 26
                 }
@@ -333,7 +323,7 @@
                     "anchor_to": "top_middle",
                     "offset": [
                         10,
-                        46
+                        51
                     ],
                     "collection_index": 27
                 }
@@ -344,7 +334,7 @@
                     "anchor_to": "top_middle",
                     "offset": [
                         28,
-                        46
+                        51
                     ],
                     "collection_index": 28
                 }
@@ -355,7 +345,7 @@
                     "anchor_to": "top_middle",
                     "offset": [
                         46,
-                        46
+                        51
                     ],
                     "collection_index": 29
                 }
@@ -366,7 +356,7 @@
                     "anchor_to": "top_middle",
                     "offset": [
                         64,
-                        46
+                        51
                     ],
                     "collection_index": 30
                 }
@@ -377,7 +367,7 @@
                     "anchor_to": "top_middle",
                     "offset": [
                         82,
-                        46
+                        51
                     ],
                     "collection_index": 31
                 }

@@ -1,6 +1,7 @@
 import { ItemStack, system } from "@minecraft/server";
 import { ModalFormData } from '@minecraft/server-ui'
 import { BasicMachine } from "./basicMachine";
+import * as Constants from "./constants.js";
 import { EnergyStorage } from "./energyStorage";
 import { FluidStorage } from "./fluidStorage";
 import * as Utils from "../utils/entity";
@@ -14,7 +15,7 @@ export class Generator extends BasicMachine {
    */
   constructor(block, settings) {
     const baseRate = settings?.generator?.rate_speed_base ?? 0;
-    super(block, baseRate);
+    super(block, { rate: baseRate, ignoreTick: settings.ignoreTick });
     if (!this.valid) return;
     this.settings = settings;
   }
@@ -44,7 +45,7 @@ export class Generator extends BasicMachine {
       lore.push(`§r§7  Energy: ${EnergyStorage.formatEnergyToText(energy.get())}/${EnergyStorage.formatEnergyToText(energy.cap)}`);
     }
 
-    if (fluid.type != "empty") {
+    if (fluid.type != Constants.EMPTY_FLUID_TYPE) {
       const liquidName = DoriosAPI.utils.capitalizeFirst(fluid.type);
       lore.push(`§r§7  ${liquidName}: ${FluidStorage.formatFluid(fluid.get())}/${FluidStorage.formatFluid(fluid.cap)}`);
     }
@@ -118,13 +119,11 @@ export class Generator extends BasicMachine {
         }
       }
       this.addNearbyMachines(entity);
-      system.runTimeout(() => {
-        if (callback) try {
+      system.run(() => {
+        if (callback) {
           callback(entity);
-        } catch {
-          system.runTimeout(() => callback(entity), 2)
         }
-      }, 2);
+      });
     })
 
     Utils.updateAdjacentNetwork(block, permutationToPlace)
