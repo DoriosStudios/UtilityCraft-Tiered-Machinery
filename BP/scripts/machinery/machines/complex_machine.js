@@ -23,8 +23,9 @@ DoriosAPI.register.blockComponent('complex_machine', {
         const config = settings
         config.entity.input_range = settings.entity.input_slots
         config.entity.output_range = settings.entity.output_slots
+        config.entity.type = "machine"
         Machine.spawnEntity(e, config, () => {
-            const machine = new Machine(e.block, config, true);
+            const machine = new Machine(e.block, { ...config, ignoreTick: true });
             machine.entity.setItem(1, 'utilitycraft:progress_down_big_bar_00', 1, " ")
             machine.entity.setItem(2, 'utilitycraft:progress_down_big_bar_00', 1, " ")
             // Progress Bars

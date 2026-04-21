@@ -220,7 +220,7 @@ globalThis.DoriosAPI = {
       if (!sourceInv || !targetInv) return 0;
 
       const sourceItem = sourceInv.getItem(sourceSlot);
-      if (!sourceItem) return 0;
+      if (!sourceItem || sourceItem.hasTag("utilitycraft:ui_element")) return 0;
 
       const slots = Array.isArray(targetSlots) ? targetSlots : [targetSlots];
 
@@ -489,7 +489,7 @@ globalThis.DoriosAPI = {
 
       for (let slot = start; slot <= end; slot++) {
         let itemToTransfer = sourceInv.getItem(slot);
-        if (!itemToTransfer) continue;
+        if (!itemToTransfer || itemToTransfer.hasTag("utilitycraft:ui_element")) continue;
 
         // Vanilla or Dorios container → direct transfer
         if (DoriosAPI.constants.vanillaContainers.includes(target?.typeId) || isDoriosContainer) {
@@ -581,7 +581,7 @@ globalThis.DoriosAPI = {
 
       for (let slot = start; slot <= end; slot++) {
         let itemToTransfer = sourceInv.getItem(slot);
-        if (!itemToTransfer) continue;
+        if (!itemToTransfer || itemToTransfer.hasTag("utilitycraft:ui_element")) continue;
 
         if (DoriosAPI.constants.vanillaContainers.includes(target?.typeId) || isDoriosContainer) {
           /** @type {Container} */
@@ -659,7 +659,7 @@ globalThis.DoriosAPI = {
 
       for (let slot = start; slot <= end; slot++) {
         const item = sourceInv.getItem(slot);
-        if (!item) continue;
+        if (!item || item.hasTag("utilitycraft:ui_element")) continue;
 
         if (DoriosAPI.constants.vanillaContainers.includes(target.block?.typeId) || isDoriosContainer) {
           const targetInv = target.container;
@@ -1417,6 +1417,9 @@ globalThis.DoriosAPI = {
       "minecraft:command_block",
       "minecraft:chain_command_block",
       "minecraft:repeating_command_block",
+      "minecraft:structure_block",
+      "minecraft:structure_void",
+      "minecraft:jigsaw"
     ],
     /**
      * Default inventory slots reserved for UtilityCraft machine upgrades.
