@@ -16,7 +16,12 @@
         "$item_collection_name": "container_items",
         "controls": [
             {
-                "machine_name@uc.machine_name": {}
+                "machine_name@uc.machine_name": {
+                    "offset": [
+                        0,
+                        -2
+                    ]
+                }
             },
             {
                 "energy_bar@uc.energy_bar": {
