@@ -63,12 +63,14 @@ DoriosAPI.register.blockComponent('complex_machine', {
         let status = "§ePaused"
         let on = false
         const slotsLabel = [
+            ``,
             `§r§eSlots Information`,
-            ""
+            ``
         ]
 
         const energy = machine.energy
         if (recipes && energy.get() > 0) {
+            let highestCost = 0
             for (let index = 0; index < INPUT_SLOTS.length; index++) {
                 const slotConfig = {
                     input_slot: INPUT_SLOTS[index],
@@ -88,9 +90,12 @@ DoriosAPI.register.blockComponent('complex_machine', {
                 if (slotData.warning) {
                     slotsLabel.push(`§r§7${index + 1}: ${slotData.warning}`)
                 } else if (recipe) {
+                    const recipeCost = recipe.cost ?? 800
+                    if (recipeCost > highestCost) highestCost = recipeCost
                     const outputName = DoriosAPI.utils.formatIdToText(recipe.output)
                     const outputAmount = recipe.amount ?? 1
                     slotsLabel.push(`§r§7${index + 1}: ${outputName} x${outputAmount}`)
+                    machine.setEnergyCost(recipe.cost, index)
                 }
             }
         } else {
@@ -125,8 +130,7 @@ DoriosAPI.register.blockComponent('complex_machine', {
             `§bRate §f${EnergyStorage.formatEnergyToText(Math.floor(machine.baseRate))}/t`,
         ];
 
-        machine.setLabel(infoLabel.join('\n'), 1)
-        machine.setLabel(slotsLabel.join('\n'), 2)
+        machine.setLabel([infoLabel.join('\n'), slotsLabel.join('\n')], 1)
 
         machine.displayEnergy();
     },
