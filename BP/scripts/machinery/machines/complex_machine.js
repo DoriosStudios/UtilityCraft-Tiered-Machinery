@@ -95,7 +95,7 @@ DoriosAPI.register.blockComponent('complex_machine', {
                     const outputName = DoriosAPI.utils.formatIdToText(recipe.output)
                     const outputAmount = recipe.amount ?? 1
                     slotsLabel.push(`§r§7${index + 1}: ${outputName} x${outputAmount}`)
-                    machine.setEnergyCost(recipe.cost, index)
+                    machine.setEnergyCost(recipeCost, index)
                 }
             }
         } else {
