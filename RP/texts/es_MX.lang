@@ -1,0 +1,33 @@
+tile.utilitycraft:basic_crusher.name=§eTrituradora básica \n §7 Ranuras de procesamiento: 3\n §7 Tasa: 20 DE/t\n §7 Capacidad de energía: 192k DE\n§o§9UC: Tiered Machinery
+tile.utilitycraft:advanced_crusher.name=§cTrituradora avanzada \n §7 Ranuras de procesamiento: 5\n §7 Tasa: 20 DE/t\n §7 Capacidad de energía: 320k DE\n§o§9UC: Tiered Machinery
+tile.utilitycraft:expert_crusher.name=§bTrituradora experta \n §7 Ranuras de procesamiento: 7\n §7 Tasa: 20 DE/t\n §7 Capacidad de energía: 448k DE\n§o§9UC: Tiered Machinery
+tile.utilitycraft:ultimate_crusher.name=§8Trituradora definitiva \n §7 Ranuras de procesamiento: 9\n §7 Tasa: 20 DE/t\n §7 Capacidad de energía: 576k DE\n§o§9UC: Tiered Machinery
+
+tile.utilitycraft:basic_electro_press.name=§ePrensa eléctrica básica \n §7 Ranuras de procesamiento: 3\n §7 Tasa: 20 DE/t\n §7 Capacidad de energía: 192k DE\n§o§9UC: Tiered Machinery
+tile.utilitycraft:advanced_electro_press.name=§cPrensa eléctrica avanzada \n §7 Ranuras de procesamiento: 5\n §7 Tasa: 20 DE/t\n §7 Capacidad de energía: 320k DE\n§o§9UC: Tiered Machinery
+tile.utilitycraft:expert_electro_press.name=§bPrensa eléctrica experta \n §7 Ranuras de procesamiento: 7\n §7 Tasa: 20 DE/t\n §7 Capacidad de energía: 448k DE\n§o§9UC: Tiered Machinery
+tile.utilitycraft:ultimate_electro_press.name=§8Prensa eléctrica definitiva \n §7 Ranuras de procesamiento: 9\n §7 Tasa: 20 DE/t\n §7 Capacidad de energía: 576k DE\n§o§9UC: Tiered Machinery
+
+tile.utilitycraft:basic_incinerator.name=§eIncinerador básico \n §7 Ranuras de procesamiento: 3\n §7 Tasa: 20 DE/t\n §7 Capacidad de energía: 192k DE\n§o§9UC: Tiered Machinery
+tile.utilitycraft:advanced_incinerator.name=§cIncinerador avanzado \n §7 Ranuras de procesamiento: 5\n §7 Tasa: 20 DE/t\n §7 Capacidad de energía: 320k DE\n§o§9UC: Tiered Machinery
+tile.utilitycraft:expert_incinerator.name=§bIncinerador experto \n §7 Ranuras de procesamiento: 7\n §7 Tasa: 20 DE/t\n §7 Capacidad de energía: 448k DE\n§o§9UC: Tiered Machinery
+tile.utilitycraft:ultimate_incinerator.name=§8Incinerador definitivo \n §7 Ranuras de procesamiento: 9\n §7 Tasa: 20 DE/t\n §7 Capacidad de energía: 576k DE\n§o§9UC: Tiered Machinery
+
+entity.utilitycraft:basic_incinerator.name=Incinerador básico
+entity.utilitycraft:advanced_incinerator.name=Incinerador avanzado
+entity.utilitycraft:expert_incinerator.name=Incinerador experto
+entity.utilitycraft:ultimate_incinerator.name=Incinerador definitivo
+
+entity.utilitycraft:basic_crusher.name=Trituradora básica
+entity.utilitycraft:advanced_crusher.name=Trituradora avanzada
+entity.utilitycraft:expert_crusher.name=Trituradora experta
+entity.utilitycraft:ultimate_crusher.name=Trituradora definitiva
+
+entity.utilitycraft:basic_electro_press.name=Prensa eléctrica básica
+entity.utilitycraft:advanced_electro_press.name=Prensa eléctrica avanzada
+entity.utilitycraft:expert_electro_press.name=Prensa eléctrica experta
+entity.utilitycraft:ultimate_electro_press.name=Prensa eléctrica definitiva
+
+dorios:itemGroup.name.crusher=Niveles de trituradora
+dorios:itemGroup.name.electro_press=Niveles de prensa eléctrica
+dorios:itemGroup.name.incinerator=Niveles de incinerador

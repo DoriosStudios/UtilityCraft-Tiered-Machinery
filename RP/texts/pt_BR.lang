@@ -1,0 +1,33 @@
+tile.utilitycraft:basic_crusher.name=§eTriturador básico \n §7 Espaços de processamento: 3\n §7 Taxa: 20 DE/t\n §7 Capacidade de energia: 192k DE\n§o§9UC: Tiered Machinery
+tile.utilitycraft:advanced_crusher.name=§cTriturador avançado \n §7 Espaços de processamento: 5\n §7 Taxa: 20 DE/t\n §7 Capacidade de energia: 320k DE\n§o§9UC: Tiered Machinery
+tile.utilitycraft:expert_crusher.name=§bTriturador especialista \n §7 Espaços de processamento: 7\n §7 Taxa: 20 DE/t\n §7 Capacidade de energia: 448k DE\n§o§9UC: Tiered Machinery
+tile.utilitycraft:ultimate_crusher.name=§8Triturador supremo \n §7 Espaços de processamento: 9\n §7 Taxa: 20 DE/t\n §7 Capacidade de energia: 576k DE\n§o§9UC: Tiered Machinery
+
+tile.utilitycraft:basic_electro_press.name=§ePrensa elétrica básica \n §7 Espaços de processamento: 3\n §7 Taxa: 20 DE/t\n §7 Capacidade de energia: 192k DE\n§o§9UC: Tiered Machinery
+tile.utilitycraft:advanced_electro_press.name=§cPrensa elétrica avançada \n §7 Espaços de processamento: 5\n §7 Taxa: 20 DE/t\n §7 Capacidade de energia: 320k DE\n§o§9UC: Tiered Machinery
+tile.utilitycraft:expert_electro_press.name=§bPrensa elétrica especialista \n §7 Espaços de processamento: 7\n §7 Taxa: 20 DE/t\n §7 Capacidade de energia: 448k DE\n§o§9UC: Tiered Machinery
+tile.utilitycraft:ultimate_electro_press.name=§8Prensa elétrica suprema \n §7 Espaços de processamento: 9\n §7 Taxa: 20 DE/t\n §7 Capacidade de energia: 576k DE\n§o§9UC: Tiered Machinery
+
+tile.utilitycraft:basic_incinerator.name=§eIncinerador básico \n §7 Espaços de processamento: 3\n §7 Taxa: 20 DE/t\n §7 Capacidade de energia: 192k DE\n§o§9UC: Tiered Machinery
+tile.utilitycraft:advanced_incinerator.name=§cIncinerador avançado \n §7 Espaços de processamento: 5\n §7 Taxa: 20 DE/t\n §7 Capacidade de energia: 320k DE\n§o§9UC: Tiered Machinery
+tile.utilitycraft:expert_incinerator.name=§bIncinerador especialista \n §7 Espaços de processamento: 7\n §7 Taxa: 20 DE/t\n §7 Capacidade de energia: 448k DE\n§o§9UC: Tiered Machinery
+tile.utilitycraft:ultimate_incinerator.name=§8Incinerador supremo \n §7 Espaços de processamento: 9\n §7 Taxa: 20 DE/t\n §7 Capacidade de energia: 576k DE\n§o§9UC: Tiered Machinery
+
+entity.utilitycraft:basic_incinerator.name=Incinerador básico
+entity.utilitycraft:advanced_incinerator.name=Incinerador avançado
+entity.utilitycraft:expert_incinerator.name=Incinerador especialista
+entity.utilitycraft:ultimate_incinerator.name=Incinerador supremo
+
+entity.utilitycraft:basic_crusher.name=Triturador básico
+entity.utilitycraft:advanced_crusher.name=Triturador avançado
+entity.utilitycraft:expert_crusher.name=Triturador especialista
+entity.utilitycraft:ultimate_crusher.name=Triturador supremo
+
+entity.utilitycraft:basic_electro_press.name=Prensa elétrica básica
+entity.utilitycraft:advanced_electro_press.name=Prensa elétrica avançada
+entity.utilitycraft:expert_electro_press.name=Prensa elétrica especialista
+entity.utilitycraft:ultimate_electro_press.name=Prensa elétrica suprema
+
+dorios:itemGroup.name.crusher=Níveis de triturador
+dorios:itemGroup.name.electro_press=Níveis de prensa elétrica
+dorios:itemGroup.name.incinerator=Níveis de incinerador

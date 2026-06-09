@@ -2,7 +2,7 @@
 	"$schema": "https://raw.githubusercontent.com/Bedrock-OSS/regolith-schemas/main/config/unified.json",
 	"type": "minecraftBedrock",
 	"author": "Dorios Studios",
-	"name": "UtilityCraft: Tiered Machinery",
+	"name": "UtilityCraft Tiered Machinery",
 	"namespace": "utilitycraft",
 	"authors": [
 		"Dorios Studios"
