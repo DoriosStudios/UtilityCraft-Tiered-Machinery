@@ -28,6 +28,4 @@ entity.utilitycraft:advanced_electro_press.name=Prensa eléctrica avanzada
 entity.utilitycraft:expert_electro_press.name=Prensa eléctrica experta
 entity.utilitycraft:ultimate_electro_press.name=Prensa eléctrica definitiva
 
-dorios:itemGroup.name.crusher=Niveles de trituradora
-dorios:itemGroup.name.electro_press=Niveles de prensa eléctrica
-dorios:itemGroup.name.incinerator=Niveles de incinerador
+dorios:itemGroup.name.tiered_machines=Tiered Machines
