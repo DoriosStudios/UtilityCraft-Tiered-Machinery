@@ -4,5 +4,8 @@ Desktop.ini
 .bridge/*
 !.bridge/compiler/
 !.bridge/extensions
+build
 builds
+.regolith
+node_modules
 assets
