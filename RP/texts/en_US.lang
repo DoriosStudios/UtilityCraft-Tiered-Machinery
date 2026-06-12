@@ -1,17 +1,17 @@
-tile.utilitycraft:basic_crusher.name=§eBasic Crusher \n §7 Processing Slots: 3\n §7 Rate: 20 DE/t\n §7 Energy Cap: 192k DE\n§o§9UC: Tiered Machinery
-tile.utilitycraft:advanced_crusher.name=§cAdvanced Crusher \n §7 Processing Slots: 5\n §7 Rate: 20 DE/t\n §7 Energy Cap: 320k DE\n§o§9UC: Tiered Machinery
-tile.utilitycraft:expert_crusher.name=§bExpert Crusher \n §7 Processing Slots: 7\n §7 Rate: 20 DE/t\n §7 Energy Cap: 448k DE\n§o§9UC: Tiered Machinery
-tile.utilitycraft:ultimate_crusher.name=§8Ultimate Crusher \n §7 Processing Slots: 9\n §7 Rate: 20 DE/t\n §7 Energy Cap: 576k DE\n§o§9UC: Tiered Machinery
+tile.utilitycraft:basic_crusher.name=§eBasic Crusher \n §7 Processing Slots: 3\n §7 Rate: 20 DE/t\n §7 Energy Cap: 192k DE\n§o§9@UC: Tiered Machinery
+tile.utilitycraft:advanced_crusher.name=§cAdvanced Crusher \n §7 Processing Slots: 5\n §7 Rate: 20 DE/t\n §7 Energy Cap: 320k DE\n§o§9@UC: Tiered Machinery
+tile.utilitycraft:expert_crusher.name=§bExpert Crusher \n §7 Processing Slots: 7\n §7 Rate: 20 DE/t\n §7 Energy Cap: 448k DE\n§o§9@UC: Tiered Machinery
+tile.utilitycraft:ultimate_crusher.name=§8Ultimate Crusher \n §7 Processing Slots: 9\n §7 Rate: 20 DE/t\n §7 Energy Cap: 576k DE\n§o§9@UC: Tiered Machinery
 
-tile.utilitycraft:basic_electro_press.name=§eBasic Electro Press \n §7 Processing Slots: 3\n §7 Rate: 20 DE/t\n §7 Energy Cap: 192k DE\n§o§9UC: Tiered Machinery
-tile.utilitycraft:advanced_electro_press.name=§cAdvanced Electro Press \n §7 Processing Slots: 5\n §7 Rate: 20 DE/t\n §7 Energy Cap: 320k DE\n§o§9UC: Tiered Machinery
-tile.utilitycraft:expert_electro_press.name=§bExpert Electro Press \n §7 Processing Slots: 7\n §7 Rate: 20 DE/t\n §7 Energy Cap: 448k DE\n§o§9UC: Tiered Machinery
-tile.utilitycraft:ultimate_electro_press.name=§8Ultimate Electro Press \n §7 Processing Slots: 9\n §7 Rate: 20 DE/t\n §7 Energy Cap: 576k DE\n§o§9UC: Tiered Machinery
+tile.utilitycraft:basic_electro_press.name=§eBasic Electro Press \n §7 Processing Slots: 3\n §7 Rate: 20 DE/t\n §7 Energy Cap: 192k DE\n§o§9@UC: Tiered Machinery
+tile.utilitycraft:advanced_electro_press.name=§cAdvanced Electro Press \n §7 Processing Slots: 5\n §7 Rate: 20 DE/t\n §7 Energy Cap: 320k DE\n§o§9@UC: Tiered Machinery
+tile.utilitycraft:expert_electro_press.name=§bExpert Electro Press \n §7 Processing Slots: 7\n §7 Rate: 20 DE/t\n §7 Energy Cap: 448k DE\n§o§9@UC: Tiered Machinery
+tile.utilitycraft:ultimate_electro_press.name=§8Ultimate Electro Press \n §7 Processing Slots: 9\n §7 Rate: 20 DE/t\n §7 Energy Cap: 576k DE\n§o§9@UC: Tiered Machinery
 
-tile.utilitycraft:basic_incinerator.name=§eBasic Incinerator \n §7 Processing Slots: 3\n §7 Rate: 20 DE/t\n §7 Energy Cap: 192k DE\n§o§9UC: Tiered Machinery
-tile.utilitycraft:advanced_incinerator.name=§cAdvanced Incinerator \n §7 Processing Slots: 5\n §7 Rate: 20 DE/t\n §7 Energy Cap: 320k DE\n§o§9UC: Tiered Machinery
-tile.utilitycraft:expert_incinerator.name=§bExpert Incinerator \n §7 Processing Slots: 7\n §7 Rate: 20 DE/t\n §7 Energy Cap: 448k DE\n§o§9UC: Tiered Machinery
-tile.utilitycraft:ultimate_incinerator.name=§8Ultimate Incinerator \n §7 Processing Slots: 9\n §7 Rate: 20 DE/t\n §7 Energy Cap: 576k DE\n§o§9UC: Tiered Machinery
+tile.utilitycraft:basic_incinerator.name=§eBasic Incinerator \n §7 Processing Slots: 3\n §7 Rate: 20 DE/t\n §7 Energy Cap: 192k DE\n§o§9@UC: Tiered Machinery
+tile.utilitycraft:advanced_incinerator.name=§cAdvanced Incinerator \n §7 Processing Slots: 5\n §7 Rate: 20 DE/t\n §7 Energy Cap: 320k DE\n§o§9@UC: Tiered Machinery
+tile.utilitycraft:expert_incinerator.name=§bExpert Incinerator \n §7 Processing Slots: 7\n §7 Rate: 20 DE/t\n §7 Energy Cap: 448k DE\n§o§9@UC: Tiered Machinery
+tile.utilitycraft:ultimate_incinerator.name=§8Ultimate Incinerator \n §7 Processing Slots: 9\n §7 Rate: 20 DE/t\n §7 Energy Cap: 576k DE\n§o§9@UC: Tiered Machinery
 
 entity.utilitycraft:basic_incinerator.name=Basic Incinerator
 entity.utilitycraft:advanced_incinerator.name=Advanced Incinerator
