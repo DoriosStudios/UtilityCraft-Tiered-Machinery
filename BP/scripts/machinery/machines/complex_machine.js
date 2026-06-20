@@ -216,34 +216,37 @@ function processSlot(machine, slotConfig, recipes, index) {
         return { resetProgress: true, warning: "Missing Input", recipe: recipe }
     }
 
-    const progress = machine.getProgress(index);
+    let progress = machine.getProgress(index);
     const energyCost = recipe.cost ?? DEFAULT_COST;
 
     const maxAmountToCraft = Math.floor(Math.min(spaceLeft / recipeAmount, inputItem.amount / required))
-    // If there is enough progress accumulated to process
-    if (progress >= energyCost) {
-        const processCount = Math.min(
-            Math.floor(progress / energyCost),
-            maxAmountToCraft
-        );
-        if (processCount > 0) {
-            // Add the processed items to the output
-            if (!outputItem) {
-                machine.entity.setItem(output_slot, recipe.output, processCount * recipeAmount);
-            } else {
-                machine.entity.changeItemAmount(output_slot, processCount * recipeAmount);
-            }
+    const consumption = machine.boosts.consumption
+    const maxProgress = maxAmountToCraft * energyCost;
+    const progressCapacity = Math.max(0, maxProgress - progress);
+    const energyToConsume = Math.min(machine.energy.get(), machine.rate, progressCapacity * consumption);
 
-            // Deduct progress and input items
-            machine.addProgress(-processCount * energyCost, index);
-            machine.entity.changeItemAmount(input_slot, -processCount * required);
-        }
-    } else {
-        // If not enough progress, continue charging with energy
-        const consumption = machine.boosts.consumption
-        const energyToConsume = Math.min(machine.energy.get(), machine.rate, maxAmountToCraft * energyCost * consumption);
+    if (energyToConsume > 0) {
         machine.energy.consume(energyToConsume);
-        machine.addProgress(energyToConsume / consumption, index);
+        progress += energyToConsume / consumption;
+        machine.setProgress(progress, { display: false, index });
+    }
+
+    const processCount = Math.min(
+        Math.floor(progress / energyCost),
+        maxAmountToCraft
+    );
+    if (processCount > 0) {
+        // Add the processed items to the output
+        if (!outputItem) {
+            machine.entity.setItem(output_slot, recipe.output, processCount * recipeAmount);
+        } else {
+            machine.entity.changeItemAmount(output_slot, processCount * recipeAmount);
+        }
+
+        // Deduct progress and input items while preserving leftover progress.
+        progress -= processCount * energyCost;
+        machine.setProgress(progress, { display: false, index });
+        machine.entity.changeItemAmount(input_slot, -processCount * required);
     }
 
     return { on: true, recipe: recipe }
