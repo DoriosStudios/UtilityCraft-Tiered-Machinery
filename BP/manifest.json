@@ -8,7 +8,7 @@
 	},
 	"header": {
 		"name": "UtilityCraft: Tiered Machinery",
-		"description": "1.1.5 §aRequires UtilityCraft 3.4.0+",
+		"description": "1.1.6 §aRequires UtilityCraft 3.4.0+",
 		"min_engine_version": [
 			1,
 			21,
@@ -18,7 +18,7 @@
 		"version": [
 			1,
 			1,
-			2
+			6
 		]
 	},
 	"modules": [
@@ -49,12 +49,12 @@
 			"version": [
 				1,
 				1,
-				2
+				6
 			]
 		},
 		{
 			"module_name": "@minecraft/server",
-			"version": "2.4.0"
+			"version": "2.8.0"
 		},
 		{
 			"module_name": "@minecraft/server-ui",

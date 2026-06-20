@@ -49,8 +49,11 @@ DoriosAPI.register.blockComponent('complex_machine', {
         const INPUT_SLOTS = expandRange(settings.entity.input_slots)
         const PROGRESS_SLOTS = expandRange(settings.entity.progress_slots)
         const OUTPUT_SLOTS = expandRange(settings.entity.output_slots)
+        const shouldUpdateUI = machine.shouldUpdateUI
 
-        machine.transferItems()
+        if (machine.hasOutputItems()) {
+            machine.transferItems()
+        }
 
         const recipesComponent = e.block.getComponent("utilitycraft:machine_recipes")?.customComponentParameters?.params
         let recipes;
@@ -62,15 +65,14 @@ DoriosAPI.register.blockComponent('complex_machine', {
 
         let status = "§ePaused"
         let on = false
-        const slotsLabel = [
+        const slotsLabel = shouldUpdateUI ? [
             ``,
             `§r§eSlots Information`,
             ``
-        ]
+        ] : undefined
 
         const energy = machine.energy
         if (recipes && energy.get() > 0) {
-            let highestCost = 0
             for (let index = 0; index < INPUT_SLOTS.length; index++) {
                 const slotConfig = {
                     input_slot: INPUT_SLOTS[index],
@@ -81,21 +83,29 @@ DoriosAPI.register.blockComponent('complex_machine', {
                 if (slotData.on) on = true
                 // Progress Handling
                 if (slotData.resetProgress) {
-                    machine.setProgress(0, { slot: PROGRESS_SLOTS[index], type: PROGRESS_TYPE, index: index })
-                } else {
+                    if (machine.getProgress(index) !== 0) {
+                        machine.setProgress(0, { slot: PROGRESS_SLOTS[index], type: PROGRESS_TYPE, index: index, display: shouldUpdateUI })
+                    } else if (shouldUpdateUI) {
+                        machine.displayProgress({ slot: PROGRESS_SLOTS[index], type: PROGRESS_TYPE, index: index })
+                    }
+                } else if (shouldUpdateUI) {
                     machine.displayProgress({ slot: PROGRESS_SLOTS[index], type: PROGRESS_TYPE, index: index })
                 }
                 // Recipe label
                 const recipe = slotData.recipe
                 if (slotData.warning) {
-                    slotsLabel.push(`§r§7${index + 1}: ${slotData.warning}`)
+                    if (shouldUpdateUI) {
+                        slotsLabel.push(`§r§7${index + 1}: ${slotData.warning}`)
+                    }
                 } else if (recipe) {
                     const recipeCost = recipe.cost ?? 800
-                    if (recipeCost > highestCost) highestCost = recipeCost
-                    const outputName = DoriosAPI.utils.formatIdToText(recipe.output)
-                    const outputAmount = recipe.amount ?? 1
-                    slotsLabel.push(`§r§7${index + 1}: ${outputName} x${outputAmount}`)
                     machine.setEnergyCost(recipeCost, index)
+
+                    if (shouldUpdateUI) {
+                        const outputName = DoriosAPI.utils.formatIdToText(recipe.output)
+                        const outputAmount = recipe.amount ?? 1
+                        slotsLabel.push(`§r§7${index + 1}: ${outputName} x${outputAmount}`)
+                    }
                 }
             }
         } else {
@@ -113,26 +123,28 @@ DoriosAPI.register.blockComponent('complex_machine', {
             }
             machine.off()
         }
-        const boosts = machine.boosts
-        const infoLabel = [
-            `§r§eMachine Information`,
-            `§7Status: §2${status}`,
-            "",
-            `§aSpeed §7x${boosts.speed.toFixed(2)}`,
-            `§aEfficiency §7${((1 / boosts.consumption) * 100).toFixed(0)}%%`,
-            `§aCost §7${EnergyStorage.formatEnergyToText(machine.getEnergyCost() * boosts.consumption)}`,
-            "",
-            `§r§eEnergy Information`,
-            "",
-            `§bPercentage §f${Math.floor(energy.getPercent())}%%`,
-            `§bStored §f${EnergyStorage.formatEnergyToText(energy.get())}`,
-            `§bCapacity §f${EnergyStorage.formatEnergyToText(energy.cap)}`,
-            `§bRate §f${EnergyStorage.formatEnergyToText(Math.floor(machine.baseRate))}/t`,
-        ];
 
-        machine.setLabel([infoLabel.join('\n'), slotsLabel.join('\n')], 1)
+        if (shouldUpdateUI) {
+            const boosts = machine.boosts
+            const infoLabel = [
+                `§r§eMachine Information`,
+                `§7Status: §2${status}`,
+                "",
+                `§aSpeed §7x${boosts.speed.toFixed(2)}`,
+                `§aEfficiency §7${((1 / boosts.consumption) * 100).toFixed(0)}%%`,
+                `§aCost §7${EnergyStorage.formatEnergyToText(machine.getEnergyCost() * boosts.consumption)}`,
+                "",
+                `§r§eEnergy Information`,
+                "",
+                `§bPercentage §f${Math.floor(energy.getPercent())}%%`,
+                `§bStored §f${EnergyStorage.formatEnergyToText(energy.get())}`,
+                `§bCapacity §f${EnergyStorage.formatEnergyToText(energy.cap)}`,
+                `§bRate §f${EnergyStorage.formatEnergyToText(Math.floor(machine.baseRate))}/t`,
+            ];
 
-        machine.displayEnergy();
+            machine.setLabel([infoLabel.join('\n'), slotsLabel.join('\n')], 1)
+            machine.displayEnergy();
+        }
     },
 
     onPlayerBreak(e) {

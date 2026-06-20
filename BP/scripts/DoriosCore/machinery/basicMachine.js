@@ -78,14 +78,18 @@ export class BasicMachine {
    * Changes the texture of the block to the on version.
    */
   on() {
-    this.block.setState("utilitycraft:on", true);
+    if (this.block.getState("utilitycraft:on") !== true) {
+      this.block.setState("utilitycraft:on", true);
+    }
   }
 
   /**
    * Changes the texture of the block to the off version.
    */
   off() {
-    this.block.setState("utilitycraft:on", false);
+    if (this.block.getState("utilitycraft:on") !== false) {
+      this.block.setState("utilitycraft:on", false);
+    }
   }
 
   /**
