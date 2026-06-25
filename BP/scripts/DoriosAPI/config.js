@@ -1,4 +1,3 @@
-
 /**
  * DoriosAPI - Setup Instructions
  *
@@ -47,18 +46,18 @@
  * ```
  */
 export const addonData = {
-    name: "UtilityCraft: Tiered Machines",
-    author: "Dorios Studios",
-    identifier: "uc_tiered_machines",
-    version: "1.1.5",
-    dependencies: {
-        "utilitycraft": {
-            version: "3.4.0",  // Required version
-            name: "UtilityCraft",  // Custom name to display
-            warning: "Please update to the latest version."  // Custom warning message
-        }
-    }
-}
+  name: "UtilityCraft: Tiered Machines",
+  author: "Dorios Studios",
+  identifier: "uc_tiered_machines",
+  version: "1.1.6",
+  dependencies: {
+    utilitycraft: {
+      version: "3.4.5", // Required version
+      name: "UtilityCraft", // Custom name to display
+      warning: "Please update to the latest version.", // Custom warning message
+    },
+  },
+};
 
 /**
  * Module Imports
@@ -79,9 +78,9 @@ export const addonData = {
  * import './itemStackClass.js'; // Item stack handling
  * ```
  */
-import './API.js'
-import './dependencyChecker.js'
-import './modules/blockClass.js'
-import './modules/playerClass.js'
-import './modules/itemStackClass.js'
-import './modules/entityClass.js'
+import "./API.js";
+import "./dependencyChecker.js";
+import "./modules/blockClass.js";
+import "./modules/playerClass.js";
+import "./modules/itemStackClass.js";
+import "./modules/entityClass.js";
