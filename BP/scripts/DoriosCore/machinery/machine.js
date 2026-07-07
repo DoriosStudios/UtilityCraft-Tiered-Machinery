@@ -339,11 +339,7 @@ export class Machine extends BasicMachine {
    * @param {number} [index=0] Cost index.
    */
   setEnergyCost(value, index = 0) {
-    const normalizedValue = Math.max(1, value);
-    const key = `${Constants.MACHINE_ENERGY_COST_PROPERTY_PREFIX}${index}`;
-    if (this.entity.getDynamicProperty(key) !== normalizedValue) {
-      this.entity.setDynamicProperty(key, normalizedValue);
-    }
+    this.entity.setDynamicProperty(`${Constants.MACHINE_ENERGY_COST_PROPERTY_PREFIX}${index}`, Math.max(1, value));
   }
 
   /**
