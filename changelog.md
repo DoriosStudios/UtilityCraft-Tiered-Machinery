@@ -6,8 +6,9 @@ This update brings UtilityCraft Tiered Machinery onto the new UtilityCraft syste
 
 - Updated Tiered Machinery to use the new UtilityCraft machine system.
 - Optimized machine behavior to reduce script load and improve world performance.
-- Reduced lag by up to 75% through the same optimization pass used by the latest UtilityCraft core update.
-- Improved compatibility with UtilityCraft 3.4.0+.
+- Replaced DoriosAPI with the current DoriosCore and DoriosLib runtime.
+- Added per-face item I/O and the standard UtilityCraft machine panels.
+- Updated compatibility to UtilityCraft 3.5.0+.
 
 ## CHANGES
 
@@ -16,12 +17,14 @@ This update brings UtilityCraft Tiered Machinery onto the new UtilityCraft syste
 - Migrated Tiered Machinery to the updated UtilityCraft backend systems.
 - Updated machine logic to align with the newer UtilityCraft processing and transfer architecture.
 - Improved behavior consistency between Tiered Machinery machines and base UtilityCraft machines.
+- Added one aggregate input mode and one aggregate output mode for every tier.
+- Added Upgrades, I/O, and Information tabs to all machine screens.
 
 ### Performance
 
 - Reduced unnecessary machine checks during normal operation.
 - Improved update handling to lower script cost in worlds with many machines.
-- Reduced lag by up to 75% compared to the previous system.
+- Cached immutable slot layouts and recipe sources instead of rebuilding them every machine tick.
 
 ## BUG FIXES
 
@@ -29,4 +32,4 @@ This update brings UtilityCraft Tiered Machinery onto the new UtilityCraft syste
 
 ## COMPATIBILITY
 
-- Requires UtilityCraft 3.4.5 or newer.
+- Requires UtilityCraft 3.5.0 or newer.

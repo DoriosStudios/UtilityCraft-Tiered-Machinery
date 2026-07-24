@@ -1,283 +1,394 @@
-import { Machine, EnergyStorage } from 'DoriosCore/index.js'
+// @ts-check
+
+import * as DoriosLib from "DoriosLib/index.js";
+import { EnergyStorage, Machine, registerIOInterface } from "DoriosCore/index.js";
 import { crusherRecipes } from "../../config/recipes/crusher.js";
 import { furnaceRecipes } from "../../config/recipes/furnace.js";
 import { pressRecipes } from "../../config/recipes/press.js";
 
-const UTILITYCRAFT_RECIPES = {
-    'crusher': crusherRecipes,
-    'furnace': furnaceRecipes,
-    'presser': pressRecipes
+const DEFAULT_COST = 800;
+const PROGRESS_TYPE = "progress_down_big_bar";
+
+const RECIPES = Object.freeze({
+  crusher: crusherRecipes,
+  furnace: furnaceRecipes,
+  presser: pressRecipes,
+});
+
+const MACHINE_TYPES = Object.freeze(["crusher", "electro_press", "incinerator"]);
+const TIER_LAYOUTS = Object.freeze({
+  basic: {
+    inputSlots: range(3, 5),
+    outputSlots: range(11, 13),
+    ioButtonSlots: range(14, 19),
+  },
+  advanced: {
+    inputSlots: range(3, 7),
+    outputSlots: range(15, 19),
+    ioButtonSlots: range(20, 25),
+  },
+  expert: {
+    inputSlots: range(3, 9),
+    outputSlots: range(19, 25),
+    ioButtonSlots: range(26, 31),
+  },
+  ultimate: {
+    inputSlots: range(3, 11),
+    outputSlots: range(23, 31),
+    ioButtonSlots: range(32, 37),
+  },
+});
+
+/** @type {Map<string, RuntimeMachineConfig>} */
+const runtimeConfigs = new Map();
+
+/** @type {Map<string, SingleInputRecipes|undefined>} */
+const recipeSources = new Map();
+
+for (const [tier, layout] of Object.entries(TIER_LAYOUTS)) {
+  for (const machineType of MACHINE_TYPES) {
+    registerIOInterface(`utilitycraft:${tier}_${machineType}`, {
+      items: {
+        buttonSlots: layout.ioButtonSlots,
+        anyInputSlots: layout.inputSlots,
+        anyOutputSlots: layout.outputSlots,
+        modes: [
+          { id: "disabled" },
+          { id: "input_1", inputSlots: layout.inputSlots },
+          { id: "output_1", outputSlots: layout.outputSlots },
+        ],
+      },
+    });
+  }
 }
 
-const DEFAULT_COST = 800
-const PROGRESS_TYPE = "progress_down_big_bar"
+DoriosLib.registry.blockComponent("utilitycraft:complex_machine", {
+  /**
+   * @param {import("@minecraft/server").BlockComponentPlayerPlaceBeforeEvent} event
+   * @param {{ params: MachineSettings }} context
+   */
+  beforeOnPlayerPlace(event, { params: settings }) {
+    const config = {
+      ...settings,
+      entity: {
+        ...settings.entity,
+        type: settings.entity.type ?? "machine",
+      },
+    };
 
-DoriosAPI.register.blockComponent('complex_machine', {
-    /**
-     * Runs before the machine is placed by the player.
-     * 
-     * @param {import('@minecraft/server').BlockComponentPlayerPlaceBeforeEvent} e
-     * @param {{ params: MachineSettings }} ctx
-     */
-    beforeOnPlayerPlace(e, { params: settings }) {
-        const config = settings
-        config.entity.input_range = settings.entity.input_slots
-        config.entity.output_range = settings.entity.output_slots
-        config.entity.type = "machine"
-        Machine.spawnEntity(e, config, () => {
-            const machine = new Machine(e.block, { ...config, ignoreTick: true });
-            machine.entity.setItem(1, 'utilitycraft:progress_down_big_bar_00', 1, " ")
-            machine.entity.setItem(2, 'utilitycraft:progress_down_big_bar_00', 1, " ")
-            // Progress Bars
-            const PROGRESS_SLOTS = expandRange(settings.entity.progress_slots)
-            PROGRESS_SLOTS.forEach(slot => {
-                machine.entity.setItem(slot, 'utilitycraft:progress_down_big_bar_00')
-            })
-        });
-    },
+    Machine.spawnEntity(event, config);
+  },
 
-    /**
-     * Executes each tick for the machine.
-     * 
-     * @param {import('@minecraft/server').BlockComponentTickEvent} e
-     * @param {{ params: MachineSettings }} ctx
-     */
-    onTick(e, { params: settings }) {
-        const machine = new Machine(e.block, settings);
-        if (!machine.valid) return
+  /**
+   * @param {import("@minecraft/server").BlockComponentTickEvent} event
+   * @param {{ params: MachineSettings }} context
+   */
+  onTick(event, { params: settings }) {
+    const { block } = event;
+    const machine = new Machine(block, settings);
+    if (!machine.valid) return;
+    if (!ensureInventorySize(machine, settings.entity.inventory_size)) return;
 
-        const INPUT_SLOTS = expandRange(settings.entity.input_slots)
-        const PROGRESS_SLOTS = expandRange(settings.entity.progress_slots)
-        const OUTPUT_SLOTS = expandRange(settings.entity.output_slots)
-        const shouldUpdateUI = machine.shouldUpdateUI
+    const config = getRuntimeConfig(block.typeId, settings);
+    const recipes = getRecipes(block);
 
-        if (machine.hasOutputItems()) {
-            machine.transferItems()
+    machine.processIO();
+
+    let isWorking = false;
+    let firstRecipeCost;
+    const channelLines = ["§r§eSlot Information", ""];
+
+    if (recipes) {
+      for (const channel of config.channels) {
+        const result = processChannel(machine, channel, recipes);
+
+        isWorking ||= result.isWorking;
+        firstRecipeCost ??= result.recipeCost;
+
+        if (result.resetProgress) {
+          if (machine.getProgress(channel.index) !== 0) {
+            machine.setProgress(0, {
+              slot: channel.progressSlot,
+              type: PROGRESS_TYPE,
+              index: channel.index,
+              display: machine.shouldUpdateUI,
+            });
+          } else if (machine.shouldUpdateUI) {
+            machine.displayProgress({
+              slot: channel.progressSlot,
+              type: PROGRESS_TYPE,
+              index: channel.index,
+            });
+          }
+        } else if (machine.shouldUpdateUI) {
+          machine.displayProgress({
+            slot: channel.progressSlot,
+            type: PROGRESS_TYPE,
+            index: channel.index,
+          });
         }
 
-        const recipesComponent = e.block.getComponent("utilitycraft:machine_recipes")?.customComponentParameters?.params
-        let recipes;
-        if (recipesComponent.type) {
-            recipes = UTILITYCRAFT_RECIPES[recipesComponent.type]
-        } else {
-            recipes = recipesComponent
+        if (!machine.shouldUpdateUI) continue;
+
+        if (result.warning) {
+          channelLines.push(`§r§7${channel.index + 1}: §e${result.warning}`);
+        } else if (result.outputTypeId) {
+          channelLines.push(
+            `§r§7${channel.index + 1}: ${DoriosLib.text.formatIdentifier(result.outputTypeId)} x${result.outputAmount}`,
+          );
         }
-
-        let status = "§ePaused"
-        let on = false
-        const slotsLabel = shouldUpdateUI ? [
-            ``,
-            `§r§eSlots Information`,
-            ``
-        ] : undefined
-
-        const energy = machine.energy
-        if (recipes && energy.get() > 0) {
-            for (let index = 0; index < INPUT_SLOTS.length; index++) {
-                const slotConfig = {
-                    input_slot: INPUT_SLOTS[index],
-                    output_slot: OUTPUT_SLOTS[index]
-                }
-                const slotData = processSlot(machine, slotConfig, recipes, index)
-                // Machine State
-                if (slotData.on) on = true
-                // Progress Handling
-                if (slotData.resetProgress) {
-                    if (machine.getProgress(index) !== 0) {
-                        machine.setProgress(0, { slot: PROGRESS_SLOTS[index], type: PROGRESS_TYPE, index: index, display: shouldUpdateUI })
-                    } else if (shouldUpdateUI) {
-                        machine.displayProgress({ slot: PROGRESS_SLOTS[index], type: PROGRESS_TYPE, index: index })
-                    }
-                } else if (shouldUpdateUI) {
-                    machine.displayProgress({ slot: PROGRESS_SLOTS[index], type: PROGRESS_TYPE, index: index })
-                }
-                // Recipe label
-                const recipe = slotData.recipe
-                if (slotData.warning) {
-                    if (shouldUpdateUI) {
-                        slotsLabel.push(`§r§7${index + 1}: ${slotData.warning}`)
-                    }
-                } else if (recipe) {
-                    const recipeCost = recipe.cost ?? 800
-                    machine.setEnergyCost(recipeCost, index)
-
-                    if (shouldUpdateUI) {
-                        const outputName = DoriosAPI.utils.formatIdToText(recipe.output)
-                        const outputAmount = recipe.amount ?? 1
-                        slotsLabel.push(`§r§7${index + 1}: ${outputName} x${outputAmount}`)
-                    }
-                }
-            }
-        } else {
-            status = "§eNo Recipes"
+      }
+    } else {
+      for (const channel of config.channels) {
+        if (machine.getProgress(channel.index) !== 0) {
+          machine.setProgress(0, {
+            slot: channel.progressSlot,
+            type: PROGRESS_TYPE,
+            index: channel.index,
+            display: machine.shouldUpdateUI,
+          });
+        } else if (machine.shouldUpdateUI) {
+          machine.displayProgress({
+            slot: channel.progressSlot,
+            type: PROGRESS_TYPE,
+            index: channel.index,
+          });
         }
-
-        if (on) {
-            status = "§2Working"
-            machine.on()
-        } else {
-            if (energy.get() <= 0) {
-                status = "§eNo Energy"
-            } else {
-                status = "§eIdle"
-            }
-            machine.off()
-        }
-
-        if (shouldUpdateUI) {
-            const boosts = machine.boosts
-            const infoLabel = [
-                `§r§eMachine Information`,
-                `§7Status: §2${status}`,
-                "",
-                `§aSpeed §7x${boosts.speed.toFixed(2)}`,
-                `§aEfficiency §7${((1 / boosts.consumption) * 100).toFixed(0)}%%`,
-                `§aCost §7${EnergyStorage.formatEnergyToText(machine.getEnergyCost() * boosts.consumption)}`,
-                "",
-                `§r§eEnergy Information`,
-                "",
-                `§bPercentage §f${Math.floor(energy.getPercent())}%%`,
-                `§bStored §f${EnergyStorage.formatEnergyToText(energy.get())}`,
-                `§bCapacity §f${EnergyStorage.formatEnergyToText(energy.cap)}`,
-                `§bRate §f${EnergyStorage.formatEnergyToText(Math.floor(machine.baseRate))}/t`,
-            ];
-
-            machine.setLabel([infoLabel.join('\n'), slotsLabel.join('\n')], 1)
-            machine.displayEnergy();
-        }
-    },
-
-    onPlayerBreak(e) {
-        Machine.onDestroy(e);
+      }
     }
+
+    const status = isWorking
+      ? "§2Working"
+      : !recipes
+        ? "§eNo Recipes"
+        : machine.energy.get() <= 0
+          ? "§eNo Energy"
+          : "§eIdle";
+
+    if (isWorking) {
+      machine.on();
+    } else {
+      machine.off();
+    }
+
+    if (!machine.shouldUpdateUI) return;
+
+    const recipeCost = firstRecipeCost ?? settings.machine.energy_cost ?? DEFAULT_COST;
+    const boosts = machine.boosts;
+    const energy = machine.energy;
+    const machineLines = [
+      "§r§eMachine Information",
+      `§r§7Status: ${status}`,
+      "",
+      `§r§aSpeed §7x${boosts.speed.toFixed(2)}`,
+      `§r§aEfficiency §7${((1 / boosts.consumption) * 100).toFixed(0)}%`,
+      `§r§aCost §7${EnergyStorage.formatEnergyToText(recipeCost * boosts.consumption)}`,
+      "",
+      "§r§eEnergy Information",
+      "",
+      `§r§bPercentage §f${Math.floor(energy.getPercent())}%`,
+      `§r§bStored §f${EnergyStorage.formatEnergyToText(energy.get())}`,
+      `§r§bCapacity §f${EnergyStorage.formatEnergyToText(energy.cap)}`,
+      `§r§bRate §f${EnergyStorage.formatEnergyToText(Math.floor(machine.baseRate))}/t`,
+    ];
+
+    machine.setLabel(machineLines.join("\n"), 1);
+    machine.setLabel(channelLines.join("\n"), 2);
+    machine.displayEnergy();
+  },
+
+  onPlayerBreak(event) {
+    Machine.onDestroy(event);
+  },
 });
 
 /**
- * Processes a single machine slot configuration.
+ * Processes one independent input -> progress -> output channel.
  *
- * This function handles the full processing logic for one logical channel
- * of a machine (input → progress → output).
- *
- * Responsibilities may include:
- * - Validating input item against provided recipes.
- * - Checking output compatibility and available space.
- * - Handling energy consumption.
- * - Managing progress accumulation and completion.
- * - Producing output and consuming input when craft completes.
- *
- * Designed to support multi-line machines (3, 5, 7, 9+ channels),
- * where each channel is processed independently per tick.
- *
- * @param {Machine} machine Instance of the Machine class handling energy, progress, and inventory logic.
- * @param {{ 
- *   input_slot: number, 
- *   progress_slot: number, 
- *   output_slot: number 
- * }} slotConfig Slot configuration object defining the inventory indices used by this processing channel.
- * 
- * @param {Object.<string, {
- *   output: string,
- *   amount?: number,
- *   required?: number,
- *   cost?: number
- * }>} recipes Recipe map where:
- *   - key → input item typeId
- *   - value → recipe configuration object
- * @param {Number} index Slot index.
- *
- * @returns {{
- *   warning: String,
- *   recipe?: Object,
- *   resetProgress?: boolean,
- *   on?: boolean
- * }} Result object describing the state of this processing channel after execution.
+ * @param {Machine} machine
+ * @param {RuntimeChannel} channel
+ * @param {SingleInputRecipes} recipes
+ * @returns {ChannelResult}
  */
-function processSlot(machine, slotConfig, recipes, index) {
-    const inv = machine.container;
-    const { input_slot, output_slot } = slotConfig
+function processChannel(machine, channel, recipes) {
+  const { inputSlot, outputSlot, index } = channel;
+  const inputItem = machine.container.getItem(inputSlot);
 
-    // Get the input slot (slot 3 in this case)
-    const inputItem = inv.getItem(input_slot);
-    if (!inputItem) {
-        return { resetProgress: true, warning: "No Input" }
+  if (!inputItem) return { resetProgress: true, isWorking: false, warning: "No Input" };
+
+  const recipe = recipes[inputItem.typeId];
+  if (!recipe) return { resetProgress: true, isWorking: false, warning: "Invalid Recipe" };
+
+  const outputItem = machine.container.getItem(outputSlot);
+  if (outputItem && outputItem.typeId !== recipe.output) {
+    return { resetProgress: true, isWorking: false, warning: "Output Conflict" };
+  }
+
+  const outputAmount = recipe.amount ?? 1;
+  const requiredAmount = recipe.required ?? 1;
+  const spaceLeft = (outputItem?.maxAmount ?? 64) - (outputItem?.amount ?? 0);
+
+  if (outputAmount > spaceLeft) {
+    return { resetProgress: true, isWorking: false, warning: "Output Full" };
+  }
+  if (inputItem.amount < requiredAmount) {
+    return { resetProgress: true, isWorking: false, warning: `Needs ${requiredAmount} Items` };
+  }
+
+  const recipeCost = recipe.cost ?? DEFAULT_COST;
+  const processBatch = Math.max(1, Math.floor(machine.boosts.process_batch));
+  const consumption = machine.boosts.consumption;
+  const maxCrafts = Math.floor(Math.min(spaceLeft / outputAmount, inputItem.amount / requiredAmount));
+
+  if (machine.getEnergyCost(index) !== recipeCost) {
+    machine.setEnergyCost(recipeCost, index);
+  }
+
+  let progress = machine.getProgress(index);
+  const maxProgress = Math.ceil(maxCrafts / processBatch) * recipeCost;
+  const progressCapacity = Math.max(0, maxProgress - progress);
+  const energyConsumed = Math.min(
+    machine.energy.get(),
+    machine.rate,
+    progressCapacity * consumption,
+  );
+
+  if (energyConsumed > 0) {
+    machine.energy.consume(energyConsumed);
+    progress += energyConsumed / consumption;
+    machine.setProgress(progress, { index, display: false });
+  }
+
+  const completedBatches = Math.floor(progress / recipeCost);
+  const craftCount = Math.min(completedBatches * processBatch, maxCrafts);
+
+  if (craftCount > 0) {
+    const producedAmount = craftCount * outputAmount;
+
+    if (outputItem) {
+      DoriosLib.entity.changeItemAmount(machine.entity, { slot: outputSlot, amount: producedAmount });
+    } else {
+      DoriosLib.entity.setNewItem(machine.entity, {
+        slot: outputSlot,
+        typeId: recipe.output,
+        amount: producedAmount,
+      });
     }
 
-    // Validate recipe based on the input item
-    const recipe = recipes[inputItem?.typeId];
-    if (!recipe) {
-        return { resetProgress: true, warning: "No Recipe" }
-    }
+    const completedCost = Math.ceil(craftCount / processBatch) * recipeCost;
+    progress -= completedCost;
+    machine.setProgress(progress, { index, display: false });
+    DoriosLib.entity.changeItemAmount(machine.entity, {
+      slot: inputSlot,
+      amount: -(craftCount * requiredAmount),
+    });
+  }
 
-    // Get the output slot (usually the last one)
-    const outputItem = inv.getItem(output_slot);
-    // Output slot must either match the recipe result or be empty
-    if (outputItem && outputItem.typeId !== recipe.output) {
-        return { resetProgress: true, warning: "Output Conflic", recipe: recipe }
-    }
-
-    // Check how many items can still fit in the output slot
-    const spaceLeft = (outputItem?.maxAmount ?? 64) - (outputItem?.amount ?? 0);
-    const recipeAmount = recipe.amount ?? 1
-    if (recipeAmount > spaceLeft) {
-        return { resetProgress: true, warning: "Output Full", recipe: recipe }
-    }
-
-    // Check if there are enough items in the input slot
-    const required = recipe.required ?? 1;
-    if (inputItem.amount < required) {
-        return { resetProgress: true, warning: "Missing Input", recipe: recipe }
-    }
-
-    let progress = machine.getProgress(index);
-    const energyCost = recipe.cost ?? DEFAULT_COST;
-
-    const maxAmountToCraft = Math.floor(Math.min(spaceLeft / recipeAmount, inputItem.amount / required))
-    const consumption = machine.boosts.consumption
-    const maxProgress = maxAmountToCraft * energyCost;
-    const progressCapacity = Math.max(0, maxProgress - progress);
-    const energyToConsume = Math.min(machine.energy.get(), machine.rate, progressCapacity * consumption);
-
-    if (energyToConsume > 0) {
-        machine.energy.consume(energyToConsume);
-        progress += energyToConsume / consumption;
-        machine.setProgress(progress, { display: false, index });
-    }
-
-    const processCount = Math.min(
-        Math.floor(progress / energyCost),
-        maxAmountToCraft
-    );
-    if (processCount > 0) {
-        // Add the processed items to the output
-        if (!outputItem) {
-            machine.entity.setItem(output_slot, recipe.output, processCount * recipeAmount);
-        } else {
-            machine.entity.changeItemAmount(output_slot, processCount * recipeAmount);
-        }
-
-        // Deduct progress and input items while preserving leftover progress.
-        progress -= processCount * energyCost;
-        machine.setProgress(progress, { display: false, index });
-        machine.entity.changeItemAmount(input_slot, -processCount * required);
-    }
-
-    return { on: true, recipe: recipe }
+  return {
+    resetProgress: false,
+    isWorking: energyConsumed > 0 || craftCount > 0,
+    warning: energyConsumed <= 0 && craftCount <= 0 && machine.energy.get() <= 0 ? "No Energy" : undefined,
+    recipeCost,
+    outputTypeId: recipe.output,
+    outputAmount,
+  };
 }
 
-function expandRange(rangeArray) {
-    if (!Array.isArray(rangeArray)) return [];
+/**
+ * @param {string} blockTypeId
+ * @param {MachineSettings} settings
+ * @returns {RuntimeMachineConfig}
+ */
+function getRuntimeConfig(blockTypeId, settings) {
+  const cached = runtimeConfigs.get(blockTypeId);
+  if (cached) return cached;
 
-    // Caso normal (ya es lista expandida)
-    if (rangeArray.length > 2) return rangeArray;
+  const inputSlots = expandSlots(settings.entity.input_slots);
+  const progressSlots = expandSlots(settings.entity.progress_slots);
+  const outputSlots = expandSlots(settings.entity.output_slots);
+  const channelCount = Math.min(inputSlots.length, progressSlots.length, outputSlots.length);
 
-    const [start, end] = rangeArray;
+  if (channelCount === 0 || inputSlots.length !== progressSlots.length || inputSlots.length !== outputSlots.length) {
+    console.warn(`[Tiered Machinery] Invalid channel layout for ${blockTypeId}`);
+  }
 
-    if (start === undefined || end === undefined) return rangeArray;
+  const config = {
+    channels: Array.from({ length: channelCount }, (_, index) => ({
+      index,
+      inputSlot: inputSlots[index],
+      progressSlot: progressSlots[index],
+      outputSlot: outputSlots[index],
+    })),
+  };
 
-    const result = [];
-    for (let i = start; i <= end; i++) {
-        result.push(i);
-    }
-
-    return result;
+  runtimeConfigs.set(blockTypeId, config);
+  return config;
 }
+
+/**
+ * Expands entities created by the legacy runtime so existing placed machines
+ * gain the six slots reserved by the new per-face I/O interface.
+ *
+ * @param {Machine} machine
+ * @param {number} expectedSize
+ * @returns {boolean}
+ */
+function ensureInventorySize(machine, expectedSize) {
+  if (machine.container.size >= expectedSize) return true;
+
+  try {
+    machine.entity.triggerEvent(`utilitycraft:inventory_${expectedSize}`);
+  } catch {}
+
+  return false;
+}
+
+/**
+ * @param {import("@minecraft/server").Block} block
+ * @returns {SingleInputRecipes|undefined}
+ */
+function getRecipes(block) {
+  if (recipeSources.has(block.typeId)) return recipeSources.get(block.typeId);
+
+  const params = block.getComponent("utilitycraft:machine_recipes")?.customComponentParameters?.params;
+  const recipes = params?.type ? RECIPES[params.type] : params;
+  recipeSources.set(block.typeId, recipes);
+  return recipes;
+}
+
+/** @param {number} start @param {number} end @returns {number[]} */
+function range(start, end) {
+  return Array.from({ length: end - start + 1 }, (_, index) => start + index);
+}
+
+/**
+ * Expands an inclusive two-number range while preserving explicit slot lists.
+ *
+ * @param {number[]|undefined} slots
+ * @returns {number[]}
+ */
+function expandSlots(slots) {
+  if (!Array.isArray(slots)) return [];
+  if (slots.length !== 2) return [...slots];
+  return range(slots[0], slots[1]);
+}
+
+/**
+ * @typedef {Object} RuntimeChannel
+ * @property {number} index
+ * @property {number} inputSlot
+ * @property {number} progressSlot
+ * @property {number} outputSlot
+ */
+
+/** @typedef {{ channels: RuntimeChannel[] }} RuntimeMachineConfig */
+
+/**
+ * @typedef {Object} ChannelResult
+ * @property {boolean} resetProgress
+ * @property {boolean} isWorking
+ * @property {string} [warning]
+ * @property {number} [recipeCost]
+ * @property {string} [outputTypeId]
+ * @property {number} [outputAmount]
+ */

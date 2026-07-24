@@ -1,8 +1,16 @@
 {
-    "ui_defs": [
-        "ui/basic_simple_machine.json",
-        "ui/advanced_simple_machine.json",
-        "ui/expert_simple_machine.json",
-        "ui/ultimate_simple_machine.json"
-    ]
+  "ui_defs": [
+    "ui/basic_crusher.json",
+    "ui/basic_electro_press.json",
+    "ui/basic_incinerator.json",
+    "ui/advanced_crusher.json",
+    "ui/advanced_electro_press.json",
+    "ui/advanced_incinerator.json",
+    "ui/expert_crusher.json",
+    "ui/expert_electro_press.json",
+    "ui/expert_incinerator.json",
+    "ui/ultimate_crusher.json",
+    "ui/ultimate_electro_press.json",
+    "ui/ultimate_incinerator.json"
+  ]
 }

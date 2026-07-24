@@ -1,0 +1,257 @@
+{
+  "namespace": "basic_incinerator",
+  "basic_incinerator_top": {
+    "type": "collection_panel",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "size": [
+      162,
+      72
+    ],
+    "offset": [
+      -10,
+      -40
+    ],
+    "collection_name": "container_items",
+    "$item_collection_name": "container_items",
+    "controls": [
+      {
+        "machine_name@uc.machine_name": {
+          "offset": [
+            0,
+            -2
+          ]
+        }
+      },
+      {
+        "panel@uc.machine_side_panel": {}
+      },
+      {
+        "machine_label@uc.text_label": {
+          "collection_index": 1,
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "size": [
+            74,
+            70
+          ],
+          "$text_scale": 0.55,
+          "offset": [
+            -78,
+            2
+          ]
+        }
+      },
+      {
+        "channels_label@uc.text_label": {
+          "collection_index": 2,
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "size": [
+            74,
+            78
+          ],
+          "$text_scale": 0.55,
+          "offset": [
+            -78,
+            80
+          ]
+        }
+      },
+      {
+        "item@uc.input_slot": {
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle",
+          "offset": [
+            -14,
+            9
+          ],
+          "collection_index": 3
+        }
+      },
+      {
+        "item@uc.input_slot": {
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle",
+          "offset": [
+            10,
+            9
+          ],
+          "collection_index": 4
+        }
+      },
+      {
+        "item@uc.input_slot": {
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle",
+          "offset": [
+            34,
+            9
+          ],
+          "collection_index": 5
+        }
+      },
+      {
+        "machinery@uc.progress_display": {
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle",
+          "offset": [
+            -14,
+            22
+          ],
+          "collection_index": 8
+        }
+      },
+      {
+        "machinery@uc.progress_display": {
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle",
+          "offset": [
+            10,
+            22
+          ],
+          "collection_index": 9
+        }
+      },
+      {
+        "machinery@uc.progress_display": {
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle",
+          "offset": [
+            34,
+            22
+          ],
+          "collection_index": 10
+        }
+      },
+      {
+        "item@uc.input_slot": {
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle",
+          "offset": [
+            -14,
+            51
+          ],
+          "collection_index": 11,
+          "$slot_background_texture": "textures/ui/slots/output_1_slot"
+        }
+      },
+      {
+        "item@uc.input_slot": {
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle",
+          "offset": [
+            10,
+            51
+          ],
+          "collection_index": 12,
+          "$slot_background_texture": "textures/ui/slots/output_1_slot"
+        }
+      },
+      {
+        "item@uc.input_slot": {
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle",
+          "offset": [
+            34,
+            51
+          ],
+          "collection_index": 13,
+          "$slot_background_texture": "textures/ui/slots/output_1_slot"
+        }
+      },
+      {
+        "upgrades_tab@uc.upgrades_tab": {
+          "$upgrade_index_1": 6,
+          "$upgrade_index_2": 7
+        }
+      },
+      {
+        "io_tab@uc.io_tab": {
+          "$io_items_modes_description": "ui.utilitycraft:io.tiered_machine.items",
+          "$io_top_texture": "textures/blocks/incinerator/basic_incinerator_off_up",
+          "$io_left_texture": "textures/blocks/incinerator/basic_incinerator_off_west",
+          "$io_front_texture": "textures/blocks/incinerator/basic_incinerator_off_north",
+          "$io_right_texture": "textures/blocks/incinerator/basic_incinerator_off_east",
+          "$io_bottom_texture": "textures/blocks/incinerator/basic_incinerator_off_down",
+          "$io_back_texture": "textures/blocks/incinerator/basic_incinerator_off_south",
+          "$io_item_top_index": 14,
+          "$io_item_left_index": 15,
+          "$io_item_front_index": 16,
+          "$io_item_right_index": 17,
+          "$io_item_bottom_index": 18,
+          "$io_item_back_index": 19
+        }
+      },
+      {
+        "info_tab@uc.info_tab": {
+          "$info_description": "ui.utilitycraft:info.tiered.incinerator"
+        }
+      },
+      {
+        "energy_bar@uc.energy_bar": {
+          "offset": [
+            97,
+            64
+          ],
+          "$bar_bg_texture": "textures/ui/toggle_button/right_bg"
+        }
+      }
+    ]
+  },
+  "utility_panel": {
+    "type": "panel",
+    "controls": [
+      {
+        "container_gamepad_helpers@common.container_gamepad_helpers": {}
+      },
+      {
+        "flying_item_renderer@common.flying_item_renderer": {
+          "layer": 40
+        }
+      },
+      {
+        "selected_item_details_factory@common.selected_item_details_factory": {}
+      },
+      {
+        "item_lock_notification_factory@common.item_lock_notification_factory": {}
+      },
+      {
+        "root_panel@common.root_panel": {
+          "layer": 1,
+          "controls": [
+            {
+              "common_panel@common.common_panel": {}
+            },
+            {
+              "chest_panel": {
+                "type": "panel",
+                "layer": 5,
+                "controls": [
+                  {
+                    "basic_incinerator_top@basic_incinerator.basic_incinerator_top": {}
+                  },
+                  {
+                    "inventory_panel_bottom_half_with_label@common.inventory_panel_bottom_half_with_label": {}
+                  },
+                  {
+                    "hotbar_grid@common.hotbar_grid_template": {}
+                  },
+                  {
+                    "inventory_take_progress_icon_button@common.inventory_take_progress_icon_button": {}
+                  }
+                ]
+              }
+            },
+            {
+              "inventory_selected_icon_button@common.inventory_selected_icon_button": {}
+            },
+            {
+              "gamepad_cursor@common.gamepad_cursor_button": {}
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

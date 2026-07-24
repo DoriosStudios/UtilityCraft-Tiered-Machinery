@@ -31,6 +31,7 @@
             "utilitycraft:complex_machine": {
                 "rotation": "facing",
                 "entity": {
+                    "type": "machine",
                     "input_slots": [
                         3,
                         11
@@ -43,7 +44,7 @@
                         23,
                         31
                     ],
-                    "inventory_size": 32
+                    "inventory_size": 38
                 },
                 "machine": {
                     "energy_cap": 576000,
@@ -55,35 +56,47 @@
                     ]
                 }
             },
-            "utilitycraft:special_container": {
-                "Input Slots": [
-                    3,
-                    4,
-                    5,
-                    6,
-                    7,
-                    8,
-                    9,
-                    10,
-                    11
-                ],
-                "Input 1": 3,
-                "Input 2": 4,
-                "Input 3": 5,
-                "Input 4": 6,
-                "Input 5": 7,
-                "Input 6": 8,
-                "Input 7": 9,
-                "Input 8": 10,
-                "Input 9": 11
-            },
+            "utilitycraft:machine_upgrades": [
+                {
+                    "type": "speed",
+                    "slot": 12
+                },
+                {
+                    "type": "energy",
+                    "slot": 13
+                }
+            ],
             "utilitycraft:machine_recipes": {
                 "type": "presser"
             },
-            "minecraft:geometry": "geometry.utilitycraft_block_2",
+            "minecraft:geometry": "minecraft:geometry.full_block",
             "minecraft:material_instances": {
                 "*": {
-                    "texture": "utilitycraft_ultimate_electro_press_off",
+                    "texture": "utilitycraft_ultimate_electro_press_off_north",
+                    "render_method": "alpha_test"
+                },
+                "north": {
+                    "texture": "utilitycraft_ultimate_electro_press_off_north",
+                    "render_method": "alpha_test"
+                },
+                "south": {
+                    "texture": "utilitycraft_ultimate_electro_press_off_south",
+                    "render_method": "alpha_test"
+                },
+                "east": {
+                    "texture": "utilitycraft_ultimate_electro_press_off_east",
+                    "render_method": "alpha_test"
+                },
+                "west": {
+                    "texture": "utilitycraft_ultimate_electro_press_off_west",
+                    "render_method": "alpha_test"
+                },
+                "up": {
+                    "texture": "utilitycraft_ultimate_electro_press_off_up",
+                    "render_method": "alpha_test"
+                },
+                "down": {
+                    "texture": "utilitycraft_ultimate_electro_press_off_down",
                     "render_method": "alpha_test"
                 }
             },
@@ -108,7 +121,31 @@
                 "components": {
                     "minecraft:material_instances": {
                         "*": {
-                            "texture": "utilitycraft_ultimate_electro_press_on",
+                            "texture": "utilitycraft_ultimate_electro_press_on_north",
+                            "render_method": "alpha_test"
+                        },
+                        "north": {
+                            "texture": "utilitycraft_ultimate_electro_press_on_north",
+                            "render_method": "alpha_test"
+                        },
+                        "south": {
+                            "texture": "utilitycraft_ultimate_electro_press_on_south",
+                            "render_method": "alpha_test"
+                        },
+                        "east": {
+                            "texture": "utilitycraft_ultimate_electro_press_on_east",
+                            "render_method": "alpha_test"
+                        },
+                        "west": {
+                            "texture": "utilitycraft_ultimate_electro_press_on_west",
+                            "render_method": "alpha_test"
+                        },
+                        "up": {
+                            "texture": "utilitycraft_ultimate_electro_press_on_up",
+                            "render_method": "alpha_test"
+                        },
+                        "down": {
+                            "texture": "utilitycraft_ultimate_electro_press_on_down",
                             "render_method": "alpha_test"
                         }
                     },

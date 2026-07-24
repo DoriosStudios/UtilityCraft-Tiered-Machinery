@@ -1,13 +1,16 @@
+import * as DoriosLib from "DoriosLib/index.js";
 import { ItemStack, system } from "@minecraft/server";
 import * as MachineryConstants from "../machinery/constants.js";
 import { BasicMachine } from "../machinery/basicMachine.js";
 import { EnergyStorage } from "../machinery/energyStorage.js";
 import { FluidStorage } from "../machinery/fluidStorage.js";
+import { GasStorage } from "../machinery/gasStorage.js";
 import { ActivationManager } from "./activationManager.js";
 import { DeactivationManager } from "./deactivationManager.js";
 import { StructureDetector } from "./structureDetection.js";
 import * as Utils from "../utils/entity.js";
 import * as Constants from "./constants.js";
+import { ensureGasIOConfig } from "../interfaces/gasIO.js";
 
 export class MultiblockMachine extends BasicMachine {
   /**
@@ -63,6 +66,8 @@ export class MultiblockMachine extends BasicMachine {
     const { block, player, permutationToPlace } = e;
     const mainHand = player.getComponent("equippable").getEquipment("Mainhand");
     const { energy, fluid } = Utils.getEnergyAndFluidFromItem(mainHand);
+    const gasLine = mainHand?.getLore()?.find((line) => line.replace(/§./g, "").trim().startsWith("Gas ("));
+    const gas = gasLine ? GasStorage.getGasFromText(gasLine) : undefined;
 
     system.run(() => {
       const entity = Utils.spawnEntity(block, { ...config, spawn_offset: { x: 0, y: -0.5, z: 0 } });
@@ -79,6 +84,21 @@ export class MultiblockMachine extends BasicMachine {
           fluidManager.set(fluid.amount);
         }
       }
+
+      if (config?.machine?.gas_cap) {
+        const gasManagers = GasStorage.initializeMultiple(entity, Math.max(1, Math.floor(config.machine.gas_types ?? 1)));
+        for (const manager of gasManagers) manager.setCap(config.machine.gas_cap);
+        if (gas && gas.amount > 0) {
+          gasManagers[0].setType(gas.type);
+          gasManagers[0].set(gas.amount);
+        }
+      }
+      if (config?.machine?.gas_cap && config?.machine?.fluid_cap) {
+        entity.triggerEvent("utilitycraft:fluid_gas_machine");
+      } else if (config?.machine?.gas_cap) {
+        entity.triggerEvent("utilitycraft:gas_machine");
+      }
+      ensureGasIOConfig(entity, block.typeId);
 
       system.runTimeout(() => {
         if (callback) {
@@ -122,7 +142,7 @@ export class MultiblockMachine extends BasicMachine {
     } = handlers;
     const { block, player } = e;
     const entity = block.dimension.getEntitiesAtBlockLocation(block.location)[0];
-    const mainHandTypeId = player.getEquipment("Mainhand")?.typeId ?? "";
+    const mainHandTypeId = DoriosLib.entity.getEquipment(player, "Mainhand")?.typeId ?? "";
     const isUsingWrench = mainHandTypeId.includes("wrench");
 
     if (!isUsingWrench) {
@@ -164,6 +184,8 @@ export class MultiblockMachine extends BasicMachine {
 
     const energy = new EnergyStorage(entity);
     const fluid = new FluidStorage(entity);
+    const supportsGas = entity.getComponent("minecraft:type_family")?.hasTypeFamily("dorios:gas_container") === true;
+    const gas = supportsGas ? new GasStorage(entity) : undefined;
     const blockItemId = brokenBlockPermutation.type.id;
     const blockItem = new ItemStack(blockItemId);
     const lore = [];
@@ -175,9 +197,17 @@ export class MultiblockMachine extends BasicMachine {
     }
 
     if (fluid.type != MachineryConstants.EMPTY_FLUID_TYPE) {
-      const liquidName = DoriosAPI.utils.capitalizeFirst(fluid.type);
+      const liquidName = DoriosLib.text.capitalizeFirst(fluid.type);
       lore.push(
         `§r§7  ${liquidName}: ${FluidStorage.formatFluid(fluid.get())}/${FluidStorage.formatFluid(fluid.cap)}`,
+      );
+    }
+
+
+    if (gas && gas.type !== MachineryConstants.EMPTY_GAS_TYPE && gas.get() > 0) {
+      const gasName = DoriosLib.text.capitalizeFirst(gas.type);
+      lore.push(
+        `§r§7  Gas (${gasName}): ${GasStorage.formatGas(gas.get())}/${GasStorage.formatGas(gas.cap)}`,
       );
     }
 
@@ -186,7 +216,7 @@ export class MultiblockMachine extends BasicMachine {
     }
 
     system.run(() => {
-      if (player?.isInSurvival()) {
+      if (DoriosLib.player.isSurvival(player)) {
         const oldItemEntity = dim
           .getEntities({
             type: "item",
@@ -330,14 +360,14 @@ export class MultiblockMachine extends BasicMachine {
 
         if (!out) {
           const add = Math.min(64, remaining);
-          entity.setItem(slot, itemId, add);
+          DoriosLib.entity.setNewItem(entity, { slot: slot, typeId: itemId, amount: add });
           remaining -= add;
           return;
         }
 
         if (out.typeId === itemId && out.amount < out.maxAmount) {
           const add = Math.min(out.maxAmount - out.amount, remaining);
-          entity.changeItemAmount(slot, add);
+          DoriosLib.entity.changeItemAmount(entity, { slot: slot, amount: add });
           remaining -= add;
         }
       };

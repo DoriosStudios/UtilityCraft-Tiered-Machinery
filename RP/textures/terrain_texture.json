@@ -75,6 +75,438 @@
 		},
 		"utilitycraft_ultimate_incinerator_off": {
 			"textures": "textures/blocks/incinerator/ultimate_incinerator_off"
+		},
+		"utilitycraft_advanced_crusher_off_north": {
+			"textures": "textures/blocks/crusher/advanced_crusher_off_north"
+		},
+		"utilitycraft_advanced_crusher_off_south": {
+			"textures": "textures/blocks/crusher/advanced_crusher_off_south"
+		},
+		"utilitycraft_advanced_crusher_off_east": {
+			"textures": "textures/blocks/crusher/advanced_crusher_off_east"
+		},
+		"utilitycraft_advanced_crusher_off_west": {
+			"textures": "textures/blocks/crusher/advanced_crusher_off_west"
+		},
+		"utilitycraft_advanced_crusher_off_up": {
+			"textures": "textures/blocks/crusher/advanced_crusher_off_up"
+		},
+		"utilitycraft_advanced_crusher_off_down": {
+			"textures": "textures/blocks/crusher/advanced_crusher_off_down"
+		},
+		"utilitycraft_advanced_crusher_on_north": {
+			"textures": "textures/blocks/crusher/advanced_crusher_on_north"
+		},
+		"utilitycraft_advanced_crusher_on_south": {
+			"textures": "textures/blocks/crusher/advanced_crusher_on_south"
+		},
+		"utilitycraft_advanced_crusher_on_east": {
+			"textures": "textures/blocks/crusher/advanced_crusher_on_east"
+		},
+		"utilitycraft_advanced_crusher_on_west": {
+			"textures": "textures/blocks/crusher/advanced_crusher_on_west"
+		},
+		"utilitycraft_advanced_crusher_on_up": {
+			"textures": "textures/blocks/crusher/advanced_crusher_on_up"
+		},
+		"utilitycraft_advanced_crusher_on_down": {
+			"textures": "textures/blocks/crusher/advanced_crusher_on_down"
+		},
+		"utilitycraft_basic_crusher_off_north": {
+			"textures": "textures/blocks/crusher/basic_crusher_off_north"
+		},
+		"utilitycraft_basic_crusher_off_south": {
+			"textures": "textures/blocks/crusher/basic_crusher_off_south"
+		},
+		"utilitycraft_basic_crusher_off_east": {
+			"textures": "textures/blocks/crusher/basic_crusher_off_east"
+		},
+		"utilitycraft_basic_crusher_off_west": {
+			"textures": "textures/blocks/crusher/basic_crusher_off_west"
+		},
+		"utilitycraft_basic_crusher_off_up": {
+			"textures": "textures/blocks/crusher/basic_crusher_off_up"
+		},
+		"utilitycraft_basic_crusher_off_down": {
+			"textures": "textures/blocks/crusher/basic_crusher_off_down"
+		},
+		"utilitycraft_basic_crusher_on_north": {
+			"textures": "textures/blocks/crusher/basic_crusher_on_north"
+		},
+		"utilitycraft_basic_crusher_on_south": {
+			"textures": "textures/blocks/crusher/basic_crusher_on_south"
+		},
+		"utilitycraft_basic_crusher_on_east": {
+			"textures": "textures/blocks/crusher/basic_crusher_on_east"
+		},
+		"utilitycraft_basic_crusher_on_west": {
+			"textures": "textures/blocks/crusher/basic_crusher_on_west"
+		},
+		"utilitycraft_basic_crusher_on_up": {
+			"textures": "textures/blocks/crusher/basic_crusher_on_up"
+		},
+		"utilitycraft_basic_crusher_on_down": {
+			"textures": "textures/blocks/crusher/basic_crusher_on_down"
+		},
+		"utilitycraft_expert_crusher_off_north": {
+			"textures": "textures/blocks/crusher/expert_crusher_off_north"
+		},
+		"utilitycraft_expert_crusher_off_south": {
+			"textures": "textures/blocks/crusher/expert_crusher_off_south"
+		},
+		"utilitycraft_expert_crusher_off_east": {
+			"textures": "textures/blocks/crusher/expert_crusher_off_east"
+		},
+		"utilitycraft_expert_crusher_off_west": {
+			"textures": "textures/blocks/crusher/expert_crusher_off_west"
+		},
+		"utilitycraft_expert_crusher_off_up": {
+			"textures": "textures/blocks/crusher/expert_crusher_off_up"
+		},
+		"utilitycraft_expert_crusher_off_down": {
+			"textures": "textures/blocks/crusher/expert_crusher_off_down"
+		},
+		"utilitycraft_expert_crusher_on_north": {
+			"textures": "textures/blocks/crusher/expert_crusher_on_north"
+		},
+		"utilitycraft_expert_crusher_on_south": {
+			"textures": "textures/blocks/crusher/expert_crusher_on_south"
+		},
+		"utilitycraft_expert_crusher_on_east": {
+			"textures": "textures/blocks/crusher/expert_crusher_on_east"
+		},
+		"utilitycraft_expert_crusher_on_west": {
+			"textures": "textures/blocks/crusher/expert_crusher_on_west"
+		},
+		"utilitycraft_expert_crusher_on_up": {
+			"textures": "textures/blocks/crusher/expert_crusher_on_up"
+		},
+		"utilitycraft_expert_crusher_on_down": {
+			"textures": "textures/blocks/crusher/expert_crusher_on_down"
+		},
+		"utilitycraft_ultimate_crusher_off_north": {
+			"textures": "textures/blocks/crusher/ultimate_crusher_off_north"
+		},
+		"utilitycraft_ultimate_crusher_off_south": {
+			"textures": "textures/blocks/crusher/ultimate_crusher_off_south"
+		},
+		"utilitycraft_ultimate_crusher_off_east": {
+			"textures": "textures/blocks/crusher/ultimate_crusher_off_east"
+		},
+		"utilitycraft_ultimate_crusher_off_west": {
+			"textures": "textures/blocks/crusher/ultimate_crusher_off_west"
+		},
+		"utilitycraft_ultimate_crusher_off_up": {
+			"textures": "textures/blocks/crusher/ultimate_crusher_off_up"
+		},
+		"utilitycraft_ultimate_crusher_off_down": {
+			"textures": "textures/blocks/crusher/ultimate_crusher_off_down"
+		},
+		"utilitycraft_ultimate_crusher_on_north": {
+			"textures": "textures/blocks/crusher/ultimate_crusher_on_north"
+		},
+		"utilitycraft_ultimate_crusher_on_south": {
+			"textures": "textures/blocks/crusher/ultimate_crusher_on_south"
+		},
+		"utilitycraft_ultimate_crusher_on_east": {
+			"textures": "textures/blocks/crusher/ultimate_crusher_on_east"
+		},
+		"utilitycraft_ultimate_crusher_on_west": {
+			"textures": "textures/blocks/crusher/ultimate_crusher_on_west"
+		},
+		"utilitycraft_ultimate_crusher_on_up": {
+			"textures": "textures/blocks/crusher/ultimate_crusher_on_up"
+		},
+		"utilitycraft_ultimate_crusher_on_down": {
+			"textures": "textures/blocks/crusher/ultimate_crusher_on_down"
+		},
+		"utilitycraft_advanced_electro_press_off_north": {
+			"textures": "textures/blocks/electro_press/advanced_electro_press_off_north"
+		},
+		"utilitycraft_advanced_electro_press_off_south": {
+			"textures": "textures/blocks/electro_press/advanced_electro_press_off_south"
+		},
+		"utilitycraft_advanced_electro_press_off_east": {
+			"textures": "textures/blocks/electro_press/advanced_electro_press_off_east"
+		},
+		"utilitycraft_advanced_electro_press_off_west": {
+			"textures": "textures/blocks/electro_press/advanced_electro_press_off_west"
+		},
+		"utilitycraft_advanced_electro_press_off_up": {
+			"textures": "textures/blocks/electro_press/advanced_electro_press_off_up"
+		},
+		"utilitycraft_advanced_electro_press_off_down": {
+			"textures": "textures/blocks/electro_press/advanced_electro_press_off_down"
+		},
+		"utilitycraft_advanced_electro_press_on_north": {
+			"textures": "textures/blocks/electro_press/advanced_electro_press_on_north"
+		},
+		"utilitycraft_advanced_electro_press_on_south": {
+			"textures": "textures/blocks/electro_press/advanced_electro_press_on_south"
+		},
+		"utilitycraft_advanced_electro_press_on_east": {
+			"textures": "textures/blocks/electro_press/advanced_electro_press_on_east"
+		},
+		"utilitycraft_advanced_electro_press_on_west": {
+			"textures": "textures/blocks/electro_press/advanced_electro_press_on_west"
+		},
+		"utilitycraft_advanced_electro_press_on_up": {
+			"textures": "textures/blocks/electro_press/advanced_electro_press_on_up"
+		},
+		"utilitycraft_advanced_electro_press_on_down": {
+			"textures": "textures/blocks/electro_press/advanced_electro_press_on_down"
+		},
+		"utilitycraft_basic_electro_press_off_north": {
+			"textures": "textures/blocks/electro_press/basic_electro_press_off_north"
+		},
+		"utilitycraft_basic_electro_press_off_south": {
+			"textures": "textures/blocks/electro_press/basic_electro_press_off_south"
+		},
+		"utilitycraft_basic_electro_press_off_east": {
+			"textures": "textures/blocks/electro_press/basic_electro_press_off_east"
+		},
+		"utilitycraft_basic_electro_press_off_west": {
+			"textures": "textures/blocks/electro_press/basic_electro_press_off_west"
+		},
+		"utilitycraft_basic_electro_press_off_up": {
+			"textures": "textures/blocks/electro_press/basic_electro_press_off_up"
+		},
+		"utilitycraft_basic_electro_press_off_down": {
+			"textures": "textures/blocks/electro_press/basic_electro_press_off_down"
+		},
+		"utilitycraft_basic_electro_press_on_north": {
+			"textures": "textures/blocks/electro_press/basic_electro_press_on_north"
+		},
+		"utilitycraft_basic_electro_press_on_south": {
+			"textures": "textures/blocks/electro_press/basic_electro_press_on_south"
+		},
+		"utilitycraft_basic_electro_press_on_east": {
+			"textures": "textures/blocks/electro_press/basic_electro_press_on_east"
+		},
+		"utilitycraft_basic_electro_press_on_west": {
+			"textures": "textures/blocks/electro_press/basic_electro_press_on_west"
+		},
+		"utilitycraft_basic_electro_press_on_up": {
+			"textures": "textures/blocks/electro_press/basic_electro_press_on_up"
+		},
+		"utilitycraft_basic_electro_press_on_down": {
+			"textures": "textures/blocks/electro_press/basic_electro_press_on_down"
+		},
+		"utilitycraft_expert_electro_press_off_north": {
+			"textures": "textures/blocks/electro_press/expert_electro_press_off_north"
+		},
+		"utilitycraft_expert_electro_press_off_south": {
+			"textures": "textures/blocks/electro_press/expert_electro_press_off_south"
+		},
+		"utilitycraft_expert_electro_press_off_east": {
+			"textures": "textures/blocks/electro_press/expert_electro_press_off_east"
+		},
+		"utilitycraft_expert_electro_press_off_west": {
+			"textures": "textures/blocks/electro_press/expert_electro_press_off_west"
+		},
+		"utilitycraft_expert_electro_press_off_up": {
+			"textures": "textures/blocks/electro_press/expert_electro_press_off_up"
+		},
+		"utilitycraft_expert_electro_press_off_down": {
+			"textures": "textures/blocks/electro_press/expert_electro_press_off_down"
+		},
+		"utilitycraft_expert_electro_press_on_north": {
+			"textures": "textures/blocks/electro_press/expert_electro_press_on_north"
+		},
+		"utilitycraft_expert_electro_press_on_south": {
+			"textures": "textures/blocks/electro_press/expert_electro_press_on_south"
+		},
+		"utilitycraft_expert_electro_press_on_east": {
+			"textures": "textures/blocks/electro_press/expert_electro_press_on_east"
+		},
+		"utilitycraft_expert_electro_press_on_west": {
+			"textures": "textures/blocks/electro_press/expert_electro_press_on_west"
+		},
+		"utilitycraft_expert_electro_press_on_up": {
+			"textures": "textures/blocks/electro_press/expert_electro_press_on_up"
+		},
+		"utilitycraft_expert_electro_press_on_down": {
+			"textures": "textures/blocks/electro_press/expert_electro_press_on_down"
+		},
+		"utilitycraft_ultimate_electro_press_off_north": {
+			"textures": "textures/blocks/electro_press/ultimate_electro_press_off_north"
+		},
+		"utilitycraft_ultimate_electro_press_off_south": {
+			"textures": "textures/blocks/electro_press/ultimate_electro_press_off_south"
+		},
+		"utilitycraft_ultimate_electro_press_off_east": {
+			"textures": "textures/blocks/electro_press/ultimate_electro_press_off_east"
+		},
+		"utilitycraft_ultimate_electro_press_off_west": {
+			"textures": "textures/blocks/electro_press/ultimate_electro_press_off_west"
+		},
+		"utilitycraft_ultimate_electro_press_off_up": {
+			"textures": "textures/blocks/electro_press/ultimate_electro_press_off_up"
+		},
+		"utilitycraft_ultimate_electro_press_off_down": {
+			"textures": "textures/blocks/electro_press/ultimate_electro_press_off_down"
+		},
+		"utilitycraft_ultimate_electro_press_on_north": {
+			"textures": "textures/blocks/electro_press/ultimate_electro_press_on_north"
+		},
+		"utilitycraft_ultimate_electro_press_on_south": {
+			"textures": "textures/blocks/electro_press/ultimate_electro_press_on_south"
+		},
+		"utilitycraft_ultimate_electro_press_on_east": {
+			"textures": "textures/blocks/electro_press/ultimate_electro_press_on_east"
+		},
+		"utilitycraft_ultimate_electro_press_on_west": {
+			"textures": "textures/blocks/electro_press/ultimate_electro_press_on_west"
+		},
+		"utilitycraft_ultimate_electro_press_on_up": {
+			"textures": "textures/blocks/electro_press/ultimate_electro_press_on_up"
+		},
+		"utilitycraft_ultimate_electro_press_on_down": {
+			"textures": "textures/blocks/electro_press/ultimate_electro_press_on_down"
+		},
+		"utilitycraft_advanced_incinerator_off_north": {
+			"textures": "textures/blocks/incinerator/advanced_incinerator_off_north"
+		},
+		"utilitycraft_advanced_incinerator_off_south": {
+			"textures": "textures/blocks/incinerator/advanced_incinerator_off_south"
+		},
+		"utilitycraft_advanced_incinerator_off_east": {
+			"textures": "textures/blocks/incinerator/advanced_incinerator_off_east"
+		},
+		"utilitycraft_advanced_incinerator_off_west": {
+			"textures": "textures/blocks/incinerator/advanced_incinerator_off_west"
+		},
+		"utilitycraft_advanced_incinerator_off_up": {
+			"textures": "textures/blocks/incinerator/advanced_incinerator_off_up"
+		},
+		"utilitycraft_advanced_incinerator_off_down": {
+			"textures": "textures/blocks/incinerator/advanced_incinerator_off_down"
+		},
+		"utilitycraft_advanced_incinerator_on_north": {
+			"textures": "textures/blocks/incinerator/advanced_incinerator_on_north"
+		},
+		"utilitycraft_advanced_incinerator_on_south": {
+			"textures": "textures/blocks/incinerator/advanced_incinerator_on_south"
+		},
+		"utilitycraft_advanced_incinerator_on_east": {
+			"textures": "textures/blocks/incinerator/advanced_incinerator_on_east"
+		},
+		"utilitycraft_advanced_incinerator_on_west": {
+			"textures": "textures/blocks/incinerator/advanced_incinerator_on_west"
+		},
+		"utilitycraft_advanced_incinerator_on_up": {
+			"textures": "textures/blocks/incinerator/advanced_incinerator_on_up"
+		},
+		"utilitycraft_advanced_incinerator_on_down": {
+			"textures": "textures/blocks/incinerator/advanced_incinerator_on_down"
+		},
+		"utilitycraft_basic_incinerator_off_north": {
+			"textures": "textures/blocks/incinerator/basic_incinerator_off_north"
+		},
+		"utilitycraft_basic_incinerator_off_south": {
+			"textures": "textures/blocks/incinerator/basic_incinerator_off_south"
+		},
+		"utilitycraft_basic_incinerator_off_east": {
+			"textures": "textures/blocks/incinerator/basic_incinerator_off_east"
+		},
+		"utilitycraft_basic_incinerator_off_west": {
+			"textures": "textures/blocks/incinerator/basic_incinerator_off_west"
+		},
+		"utilitycraft_basic_incinerator_off_up": {
+			"textures": "textures/blocks/incinerator/basic_incinerator_off_up"
+		},
+		"utilitycraft_basic_incinerator_off_down": {
+			"textures": "textures/blocks/incinerator/basic_incinerator_off_down"
+		},
+		"utilitycraft_basic_incinerator_on_north": {
+			"textures": "textures/blocks/incinerator/basic_incinerator_on_north"
+		},
+		"utilitycraft_basic_incinerator_on_south": {
+			"textures": "textures/blocks/incinerator/basic_incinerator_on_south"
+		},
+		"utilitycraft_basic_incinerator_on_east": {
+			"textures": "textures/blocks/incinerator/basic_incinerator_on_east"
+		},
+		"utilitycraft_basic_incinerator_on_west": {
+			"textures": "textures/blocks/incinerator/basic_incinerator_on_west"
+		},
+		"utilitycraft_basic_incinerator_on_up": {
+			"textures": "textures/blocks/incinerator/basic_incinerator_on_up"
+		},
+		"utilitycraft_basic_incinerator_on_down": {
+			"textures": "textures/blocks/incinerator/basic_incinerator_on_down"
+		},
+		"utilitycraft_expert_incinerator_off_north": {
+			"textures": "textures/blocks/incinerator/expert_incinerator_off_north"
+		},
+		"utilitycraft_expert_incinerator_off_south": {
+			"textures": "textures/blocks/incinerator/expert_incinerator_off_south"
+		},
+		"utilitycraft_expert_incinerator_off_east": {
+			"textures": "textures/blocks/incinerator/expert_incinerator_off_east"
+		},
+		"utilitycraft_expert_incinerator_off_west": {
+			"textures": "textures/blocks/incinerator/expert_incinerator_off_west"
+		},
+		"utilitycraft_expert_incinerator_off_up": {
+			"textures": "textures/blocks/incinerator/expert_incinerator_off_up"
+		},
+		"utilitycraft_expert_incinerator_off_down": {
+			"textures": "textures/blocks/incinerator/expert_incinerator_off_down"
+		},
+		"utilitycraft_expert_incinerator_on_north": {
+			"textures": "textures/blocks/incinerator/expert_incinerator_on_north"
+		},
+		"utilitycraft_expert_incinerator_on_south": {
+			"textures": "textures/blocks/incinerator/expert_incinerator_on_south"
+		},
+		"utilitycraft_expert_incinerator_on_east": {
+			"textures": "textures/blocks/incinerator/expert_incinerator_on_east"
+		},
+		"utilitycraft_expert_incinerator_on_west": {
+			"textures": "textures/blocks/incinerator/expert_incinerator_on_west"
+		},
+		"utilitycraft_expert_incinerator_on_up": {
+			"textures": "textures/blocks/incinerator/expert_incinerator_on_up"
+		},
+		"utilitycraft_expert_incinerator_on_down": {
+			"textures": "textures/blocks/incinerator/expert_incinerator_on_down"
+		},
+		"utilitycraft_ultimate_incinerator_off_north": {
+			"textures": "textures/blocks/incinerator/ultimate_incinerator_off_north"
+		},
+		"utilitycraft_ultimate_incinerator_off_south": {
+			"textures": "textures/blocks/incinerator/ultimate_incinerator_off_south"
+		},
+		"utilitycraft_ultimate_incinerator_off_east": {
+			"textures": "textures/blocks/incinerator/ultimate_incinerator_off_east"
+		},
+		"utilitycraft_ultimate_incinerator_off_west": {
+			"textures": "textures/blocks/incinerator/ultimate_incinerator_off_west"
+		},
+		"utilitycraft_ultimate_incinerator_off_up": {
+			"textures": "textures/blocks/incinerator/ultimate_incinerator_off_up"
+		},
+		"utilitycraft_ultimate_incinerator_off_down": {
+			"textures": "textures/blocks/incinerator/ultimate_incinerator_off_down"
+		},
+		"utilitycraft_ultimate_incinerator_on_north": {
+			"textures": "textures/blocks/incinerator/ultimate_incinerator_on_north"
+		},
+		"utilitycraft_ultimate_incinerator_on_south": {
+			"textures": "textures/blocks/incinerator/ultimate_incinerator_on_south"
+		},
+		"utilitycraft_ultimate_incinerator_on_east": {
+			"textures": "textures/blocks/incinerator/ultimate_incinerator_on_east"
+		},
+		"utilitycraft_ultimate_incinerator_on_west": {
+			"textures": "textures/blocks/incinerator/ultimate_incinerator_on_west"
+		},
+		"utilitycraft_ultimate_incinerator_on_up": {
+			"textures": "textures/blocks/incinerator/ultimate_incinerator_on_up"
+		},
+		"utilitycraft_ultimate_incinerator_on_down": {
+			"textures": "textures/blocks/incinerator/ultimate_incinerator_on_down"
 		}
 	}
 }

@@ -1,6 +1,9 @@
 {
+  "scripts": {
+    "generate:ui": "node tools/generate_tiered_ui.mjs"
+  },
   "dependencies": {
-    "@minecraft/server": "^2.7.0"
+    "@minecraft/server": "^2.8.0"
   },
   "devDependencies": {
     "esbuild": "^0.28.0"
