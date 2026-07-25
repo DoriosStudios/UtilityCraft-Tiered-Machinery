@@ -8,7 +8,7 @@
 	},
 	"header": {
 		"name": "UtilityCraft: Tiered Machinery",
-		"description": "1.1.6 §aRequires UtilityCraft 3.5.0+",
+		"description": "1.2.0 §aRequires UtilityCraft 3.5.0+",
 		"min_engine_version": [
 			1,
 			20,
@@ -17,8 +17,8 @@
 		"uuid": "e8ee4df4-1ae3-4669-85ef-bfb77520eb30",
 		"version": [
 			1,
-			1,
-			6
+			2,
+			0
 		]
 	},
 	"modules": [
@@ -37,15 +37,7 @@
 			"uuid": "c40c2cf0-70b6-4558-84d6-7affdd24a3a8",
 			"version": [
 				1,
-				1,
-				6
-			]
-		},
-		{
-			"uuid": "b8bff6b0-417e-43fb-9451-d1d9d80c309f",
-			"version": [
-				3,
-				5,
+				2,
 				0
 			]
 		}

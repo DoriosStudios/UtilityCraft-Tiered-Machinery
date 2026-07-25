@@ -12,7 +12,7 @@ export const ADDON_METADATA = {
   name: "UtilityCraft: Tiered Machinery",
   author: "Dorios Studios",
   identifier: "uc_tiered_machines",
-  version: "1.1.6",
+  version: "1.2.0",
   dependencies: {
     utilitycraft: {
       version: "3.5.0",
