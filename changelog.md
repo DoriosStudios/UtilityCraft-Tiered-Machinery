@@ -110,5 +110,6 @@ This is the complete changelog for the changes introduced after v1.1.6.
 
 ## COMPATIBILITY
 
+- Registered every Tiered Machinery recipe tagged `utilitycraft_workbench` with UtilityCraft's Crafter through DoriosLib.
 - Requires UtilityCraft 3.5.0 or newer.
 - Updated for the current DoriosCore and DoriosLib runtime used by UtilityCraft 3.5.0.
