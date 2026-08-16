@@ -1,5 +1,13 @@
 # UtilityCraft: Tiered Machinery v1.2.1
 
+This update modernizes machine placement, refreshes pack presentation and connects Tiered Machinery recipes to UtilityCraft's Crafter.
+
+## HIGHLIGHTS
+
+- Migrated all 12 machines to vanilla cardinal-direction placement.
+- Registered all Tiered Machinery recipes with UtilityCraft's Crafter.
+- Updated the Behavior Pack and Resource Pack icons.
+
 ## CHANGED
 
 - Replaced the custom axis and rotation states on all 12 tiered machines with the vanilla `minecraft:cardinal_direction` placement trait.
