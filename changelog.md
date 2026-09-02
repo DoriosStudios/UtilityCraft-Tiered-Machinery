@@ -7,11 +7,14 @@ This update modernizes machine placement, refreshes pack presentation and connec
 - Migrated all 12 machines to vanilla cardinal-direction placement.
 - Registered all Tiered Machinery recipes with UtilityCraft's Crafter.
 - Updated the Behavior Pack and Resource Pack icons.
+- Updated the bundled DoriosCore and DoriosLib APIs to match the current UtilityCraft runtime.
 
 ## CHANGED
 
 - Replaced the custom axis and rotation states on all 12 tiered machines with the vanilla `minecraft:cardinal_direction` placement trait.
 - Updated the Behavior Pack and Resource Pack icons.
+- Added passive `Default` and explicit `Disabled` states to every machine face, keeping automatic processing disabled in both while exposing the registered input and output slots to external transfers through `Default`.
+- Updated the localized I/O mode descriptions to show `Default` first and `Disabled` last.
 
 ## COMPATIBILITY
 

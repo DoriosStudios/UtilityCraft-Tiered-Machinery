@@ -1,5 +1,6 @@
 // @ts-check
 
+import * as DoriosLib from "DoriosLib/index.js";
 import { InterfaceManager } from "./index.js";
 import {
   OPPOSITE_DIRECTIONS,
@@ -75,16 +76,24 @@ const warnedTagConflicts = new Set();
 /**
  * @typedef {object} ItemIOGroupConfig
  * @property {number[]|[number, number]} [buttonSlots] Six face-button slots, explicit or inclusive range.
- * @property {number[]} anyInputSlots Explicit fallback inputs when no face is available.
- * @property {number[]} anyOutputSlots Explicit fallback outputs when no face is available.
+ * @property {number[]} anyInputSlots Inputs exposed without a face or through passive default faces.
+ * @property {number[]} anyOutputSlots Outputs exposed without a face or through passive default faces.
  * @property {ItemModeConfig[]} modes Ordered modes cycled by each face button.
  */
 
 /**
  * @typedef {object} LiquidIOGroupConfig
  * @property {number[]|[number, number]} [buttonSlots] Six face-button slots, explicit or inclusive range.
- * @property {number[]} anyInputIndices Explicit fallback inputs when no face is available.
- * @property {number[]} anyOutputIndices Explicit fallback outputs when no face is available.
+ * @property {number[]} anyInputIndices Inputs exposed without a face or through passive default faces.
+ * @property {number[]} anyOutputIndices Outputs exposed without a face or through passive default faces.
+ * @property {Array<{id:string,inputIndices?:number[],outputIndices?:number[]}>} modes Ordered modes cycled by each face button.
+ */
+
+/**
+ * @typedef {object} GasIOGroupConfig
+ * @property {number[]|[number, number]} [buttonSlots] Six face-button slots, explicit or inclusive range.
+ * @property {number[]} anyInputIndices Inputs exposed without a face or through passive default faces.
+ * @property {number[]} anyOutputIndices Outputs exposed without a face or through passive default faces.
  * @property {Array<{id:string,inputIndices?:number[],outputIndices?:number[]}>} modes Ordered modes cycled by each face button.
  */
 
@@ -93,7 +102,7 @@ const warnedTagConflicts = new Set();
  * @property {boolean} [invertFaces] Whether every visual face resolves to its opposite physical direction.
  * @property {ItemIOGroupConfig} [items] Item policy and optional face buttons.
  * @property {LiquidIOGroupConfig} [liquids] Fluid-index policy and optional face buttons.
- * @property {LiquidIOGroupConfig} [gases] Gas-index policy and optional face buttons.
+ * @property {GasIOGroupConfig} [gases] Gas-index policy and optional face buttons.
  */
 
 /**
@@ -220,7 +229,7 @@ function addLiquidButtons(buttons, blockTypeId, definition, registeredDefinition
  *
  * @param {Record<string, any>} buttons
  * @param {string} blockTypeId
- * @param {LiquidIOGroupConfig} definition
+ * @param {GasIOGroupConfig} definition
  * @param {import("./gasIO.js").GasIODefinition} registeredDefinition
  * @param {boolean} [invertFaces=false]
  */
@@ -258,10 +267,10 @@ function addGasButtons(buttons, blockTypeId, definition, registeredDefinition, i
  * not expose face controls.
  *
  * @param {string} blockTypeId Block identifier, e.g. `utilitycraft:infuser`.
- * @param {IOInterfaceConfig} [config={}] Item/liquid declaration.
+ * @param {IOInterfaceConfig} [config={}] Item, liquid, and gas declaration.
  * @returns {boolean} True when a backend group or visual interface was registered.
  */
-function registerIOInterfaceDefinition(blockTypeId, config = {}, sourceTag) {
+function registerIOInterfaceDefinition(blockTypeId, config = {}, sourceTag = undefined) {
   if (typeof blockTypeId !== "string" || blockTypeId.length === 0) return false;
 
   /** @type {Record<string, any>} */
@@ -271,6 +280,11 @@ function registerIOInterfaceDefinition(blockTypeId, config = {}, sourceTag) {
 
   if (config.items !== undefined) {
     const definition = registerItemIODefinition(blockTypeId, config.items);
+    DoriosLib.registry.registerItemDuctCompatibility({
+      typeId: blockTypeId,
+      insertSlots: definition.anyInputSlots,
+      extractSlots: definition.anyOutputSlots,
+    });
     addItemButtons(buttons, blockTypeId, config.items, definition, invertFaces);
     registered = true;
   }

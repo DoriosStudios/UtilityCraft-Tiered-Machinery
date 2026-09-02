@@ -4,9 +4,11 @@
   Container,
   Dimension,
   Entity,
+  EntityItemDropAfterEvent,
   ItemStack,
   Player,
   ScoreboardIdentity,
+  ScoreboardObjective,
   Vector3,
 } from "@minecraft/server";
 
@@ -14,7 +16,7 @@
 export type DirectionName = "up" | "down" | "north" | "south" | "east" | "west";
 /** Horizontal direction names used by vanilla cardinal rotation states. */
 export type CardinalDirectionName = "north" | "south" | "east" | "west";
-/** Transfer order used by generator, battery, energy, and fluid network outputs. */
+/** Transfer order used when DoriosCore sends resources through UtilityCore-managed networks. */
 export type TransferMode = "nearest" | "farthest" | "round";
 /** Transfer target categories cached by the output tracker. */
 export type OutputTransferType = "item" | "fluid" | "gas";
@@ -93,6 +95,8 @@ export interface MachineRuntimeConfig {
   gas_types?: number;
   /** Ordered inventory slots scanned for registered machine upgrades. */
   upgrades?: number[];
+  /** Set to false to ignore the entity's `utilitycraft:overclock` property. */
+  overclock?: boolean;
 }
 
 /** Runtime generation/storage settings for a generator. */
@@ -213,6 +217,8 @@ export interface MachineBoosts {
   energy_efficiency: number;
   /** Final recipe operations produced per completed process, including the base value of 1. */
   process_batch: number;
+  /** Current overclock level read from the machine entity. */
+  overclock: number;
   /** Energy consumption multiplier. Lower values are more efficient. */
   consumption: number;
 }
@@ -250,8 +256,8 @@ export class MachineUpgradeRegistry {
 
 /** Constructor options accepted by {@link BasicMachine}. */
 export interface BasicMachineOptions {
-  /** Base rate designed for normal 20 TPS logic. */
-  rate?: number;
+  /** Base rate designed for normal 20 TPS logic. The runtime does not supply a fallback. */
+  rate: number;
   /** Bypasses scheduler throttling. */
   ignoreTick?: boolean;
 }
@@ -270,9 +276,9 @@ export interface ItemIOModeConfig {
 export interface ItemIOGroupConfig {
   /** Optional six UI button slots, explicit or as an inclusive start/end range. */
   buttonSlots?: number[] | [number, number];
-  /** Explicit insertion fallback used when no source face is known. */
+  /** Insertion fallback used without a face or through passive default faces. */
   anyInputSlots: number[];
-  /** Explicit extraction fallback used when no destination face is known. */
+  /** Extraction fallback used without a face or through passive default faces. */
   anyOutputSlots: number[];
   /** Ordered visual modes cycled independently on each face. */
   modes: ItemIOModeConfig[];
@@ -292,9 +298,9 @@ export interface FluidIOModeConfig {
 export interface LiquidIOGroupConfig {
   /** Optional six UI button slots, explicit or as an inclusive start/end range. */
   buttonSlots?: number[] | [number, number];
-  /** Explicit insertion fallback used when no source face is known. */
+  /** Insertion fallback used without a face or through passive default faces. */
   anyInputIndices: number[];
-  /** Explicit extraction fallback used when no destination face is known. */
+  /** Extraction fallback used without a face or through passive default faces. */
   anyOutputIndices: number[];
   /** Ordered visual modes cycled independently on each face. */
   modes: FluidIOModeConfig[];
@@ -317,6 +323,8 @@ export interface GasIOGroupConfig {
 
 /** Complete IO registration for one machine block type. */
 export interface IOInterfaceConfig {
+  /** Resolves every visual face button to the opposite physical direction. */
+  invertFaces?: boolean;
   /** Slot-based item policy and optional item face buttons. */
   items?: ItemIOGroupConfig;
   /** Indexed-fluid policy and optional fluid face buttons. */
@@ -324,6 +332,62 @@ export interface IOInterfaceConfig {
   /** Indexed-gas policy stored separately from liquids. */
   gases?: GasIOGroupConfig;
 }
+
+/** One named item-slot group selectable by a physical link node. */
+export interface LinkNodeItemGroupConfig {
+  id: string;
+  label?: string;
+  /** Single Minecraft formatting color code used by the routing form. */
+  color?: string;
+  slots: number[];
+}
+
+/** One named storage-index group selectable by a liquid or gas link node. */
+export interface LinkNodeIndexedGroupConfig {
+  id: string;
+  label?: string;
+  /** Single Minecraft formatting color code used by the routing form. */
+  color?: string;
+  indices: number[];
+}
+
+export interface LinkNodeItemIOConfig {
+  anyInputSlots: number[];
+  anyOutputSlots: number[];
+  inputs: LinkNodeItemGroupConfig[];
+  outputs: LinkNodeItemGroupConfig[];
+}
+
+export interface LinkNodeIndexedIOConfig {
+  anyInputIndices: number[];
+  anyOutputIndices: number[];
+  inputs: LinkNodeIndexedGroupConfig[];
+  outputs: LinkNodeIndexedGroupConfig[];
+}
+
+/** Static routing groups and no-face defaults exposed by one machine. */
+export interface LinkNodeIOConfig {
+  items?: LinkNodeItemIOConfig;
+  liquids?: LinkNodeIndexedIOConfig;
+  gases?: LinkNodeIndexedIOConfig;
+}
+
+/** Canonical group returned by the link-node registry. */
+export interface LinkNodeIOGroup {
+  id: string;
+  label: string;
+  color: string;
+  values: number[];
+}
+
+export interface LinkNodeResourceDefinition {
+  anyInput: number[];
+  anyOutput: number[];
+  inputs: LinkNodeIOGroup[];
+  outputs: LinkNodeIOGroup[];
+}
+
+export type LinkNodeIODefinition = Partial<Record<"items" | "liquids" | "gases", LinkNodeResourceDefinition>>;
 
 /** Per-tick limits used by {@link BasicMachine.processIO}. */
 export interface ProcessIOLimits {
@@ -341,6 +405,102 @@ export interface ProcessIOSummary {
   gasMoved: number;
 }
 
+/** Author-facing definition for one button owned by an entity container interface. */
+export interface InterfaceButtonDefinition {
+  /** Optional id when the definition is supplied in array form. */
+  id?: string;
+  /** Inventory slot occupied by the button, from 0 to 255. */
+  slot: number;
+  /** Item id for this button. Overrides the interface-wide item id. */
+  itemId?: string;
+  /** Static label or callback used to calculate the visible button label. */
+  nameTag?: string | ((context: InterfaceButtonContext) => string);
+  /** Callback run after the player removes this button from an open container. */
+  onPress?: (context: InterfaceButtonContext) => string | void;
+  /** IO interfaces attach additional metadata such as face, blockTypeId, and modes. */
+  [property: string]: unknown;
+}
+
+/** Definition accepted by {@link InterfaceManager.registerInterface}. */
+export interface InterfaceDefinition {
+  /** Default item id used by all buttons that do not define their own. */
+  itemId?: string;
+  /** Buttons keyed by id, or an array whose optional `id` fields become the keys. */
+  buttons?: Record<string, InterfaceButtonDefinition> | InterfaceButtonDefinition[];
+}
+
+/** Normalized button stored by {@link InterfaceManager}. */
+export interface RegisteredInterfaceButton extends InterfaceButtonDefinition {
+  id: string;
+}
+
+/** Normalized interface passed to button callbacks. */
+export interface RegisteredInterfaceDefinition {
+  id: string;
+  itemId: string;
+  buttons: Map<string, RegisteredInterfaceButton>;
+}
+
+/** Context delivered to dynamic labels and button press callbacks. */
+export interface InterfaceButtonContext {
+  entity: Entity;
+  block: Block | undefined;
+  player: Player | undefined;
+  interfaceId: string;
+  interface: RegisteredInterfaceDefinition;
+  buttonId: string;
+  button: RegisteredInterfaceButton;
+  slot: number;
+  /** One-time label override returned by an `onPress` callback. */
+  nameTag?: string;
+}
+
+/** One normalized button linked to an entity/block pair. */
+export interface InterfaceButtonDescriptor {
+  interfaceId: string;
+  interfaceDefinition: RegisteredInterfaceDefinition;
+  buttonId: string;
+  button: RegisteredInterfaceButton;
+}
+
+/** Candidate button presses resolved from one open entity container. */
+export interface PressedInterfaceButtons {
+  entity: Entity;
+  block: Block | undefined;
+  container: Container;
+  pressedButtons: InterfaceButtonDescriptor[];
+}
+
+/** Encodes a container slot into the hidden prefix stored in a button name tag. */
+export function encodeInterfaceSlot(slot: number): string;
+
+/** Decodes a hidden interface slot prefix, or returns undefined when none exists. */
+export function decodeInterfaceSlot(nameTag: string | undefined): number | undefined;
+
+/** Removes a valid hidden interface slot prefix from a visible name tag. */
+export function stripInterfaceSlotCode(nameTag: string): string;
+
+/** Event-driven button interface registry for entity container UIs. */
+export class InterfaceManager {
+  static registerInterface(interfaceId: string, definition?: InterfaceDefinition): boolean;
+  static linkBlockInterface(blockTypeId: string, interfaceId: string): boolean;
+  static linkEntityInterface(entityTypeId: string, interfaceId: string): boolean;
+  static createSlotNameTag(slot: number, nameTag?: string): string;
+  static ensureEntityInterfaces(entity?: Entity, player?: Player): boolean;
+  static setButton(container: Container, context: InterfaceButtonContext): boolean;
+  static getEntityButtons(entity: Entity, block?: Block): InterfaceButtonDescriptor[];
+  static getInterfaceEntityFromBlock(block?: Block): Entity | undefined;
+  static handlePlayerButtonDrop(player: Player): boolean;
+  static handlePressedButtons(player: Player, data: PressedInterfaceButtons): boolean;
+  static resolveDroppedButtonFromOpenEntities(player: Player): PressedInterfaceButtons | undefined;
+  static getMissingButtons(
+    entity: Entity,
+    block: Block | undefined,
+    container: Container,
+  ): InterfaceButtonDescriptor[];
+  static handleEntityItemDrop(event: EntityItemDropAfterEvent): boolean;
+}
+
 /** Registers one machine's item policy and optional item/liquid IO buttons. */
 export function registerIOInterface(blockTypeId: string, config?: IOInterfaceConfig): boolean;
 
@@ -353,6 +513,15 @@ export function ensureBlockIOInterface(block?: Block): boolean;
 /** Returns whether one exact block type already owns an IO registration. */
 export function hasRegisteredIOInterface(blockTypeId: string): boolean;
 
+/** Registers the logical IO groups exposed through a machine's link nodes. */
+export function registerLinkNodeIO(blockTypeId: string, config: LinkNodeIOConfig): boolean;
+
+/** Returns a defensive copy of one machine's registered link-node groups. */
+export function getLinkNodeIODefinition(blockTypeId: string): LinkNodeIODefinition | undefined;
+
+/** Opens and persists the per-node Input to / Output from routing form. */
+export function openLinkNodeIOForm(block: Block, player: Player): Promise<boolean>;
+
 /** Namespace-style IO interface export. */
 export const IOInterface: {
   ensureBlockIOInterface: typeof ensureBlockIOInterface;
@@ -360,6 +529,22 @@ export const IOInterface: {
   registerIOInterface: typeof registerIOInterface;
   registerIOInterfaceForBlockTag: typeof registerIOInterfaceForBlockTag;
 };
+
+/** Canonical item inventory reference returned for a block, entity, or link node. */
+export interface ResolvedItemContainer {
+  kind: "block" | "entity" | "raw";
+  owner: Block | Entity | Container;
+  container: Container;
+  block?: Block;
+  entity?: Entity;
+  via?: "link_node";
+}
+
+/** Resolves the item inventory accessible at a world block location. */
+export function resolveItemContainerAt(
+  dimension: Dimension,
+  location: Vector3,
+): ResolvedItemContainer | undefined;
 
 /** Per-face fluid tank-index arrays stored by Complex fluid containers. */
 export type FaceFluidIndexConfig = Partial<Record<DirectionName, number[]>>;
@@ -403,7 +588,8 @@ export const FLUID_CONFIG_KEY: "liquids";
 export const FLUID_CONTAINER_FAMILY: "dorios:fluid_container";
 export const FLUID_CONFIG_EVENT_NAMESPACE: "dorios_fluid";
 export const SET_FLUID_CONFIG_EVENT_ID: "dorios_fluid:set_config";
-export const DEFAULT_FLUID_IO_MODE: "disabled";
+export const DEFAULT_FLUID_IO_MODE: "default";
+export const DISABLED_FLUID_IO_MODE: "disabled";
 
 export function registerFluidIODefinition(blockTypeId: string, value: LiquidIOGroupConfig): FluidIODefinition;
 export function getFluidIODefinition(blockTypeId: string): FluidIODefinition | undefined;
@@ -412,8 +598,8 @@ export function setFluidConfig(entity: Entity, config: FluidConfig): boolean;
 export function getFluidConfig(entity: Entity): FluidConfig | undefined;
 export function getFluidConfigRevision(entity: Entity): number;
 export function getFluidStatus(entity: Entity): "basic" | "simple" | "complex" | "invalid" | "unsupported";
-export function getInputFluidIndices(entity: Entity, options?: { face?: DirectionName }): ReadonlyArray<number>;
-export function getOutputFluidIndices(entity: Entity, options?: { face?: DirectionName }): ReadonlyArray<number>;
+export function getInputFluidIndices(entity: Entity, options?: { face?: DirectionName; automatic?: boolean }): ReadonlyArray<number>;
+export function getOutputFluidIndices(entity: Entity, options?: { face?: DirectionName; automatic?: boolean }): ReadonlyArray<number>;
 export function getFluidIODirectionMode(entity: Entity, blockTypeId: string, direction: string): string;
 export function cycleFluidIODirectionMode(entity: Entity, blockTypeId: string, direction: string): string;
 export function normalizeFluidConfig(value: unknown, count: number): FluidConfig;
@@ -424,6 +610,7 @@ export interface ResolvedFluidContainer {
   kind: "entity" | "tank";
   block: Block | undefined;
   entity: Entity | undefined;
+  via?: "link_node";
 }
 
 export type FluidContainerTarget = Block | Entity | ResolvedFluidContainer;
@@ -446,9 +633,9 @@ export interface FluidInsertOptions {
 
 export function resolveFluidContainer(target: FluidContainerTarget): ResolvedFluidContainer | undefined;
 export function resolveFluidContainerAt(dimension: Dimension, location: Vector3): ResolvedFluidContainer | undefined;
-export function getFluidInputIndices(target: FluidContainerTarget, options?: { face?: DirectionName }): ReadonlyArray<number>;
-export function getFluidOutputIndices(target: FluidContainerTarget, options?: { face?: DirectionName }): ReadonlyArray<number>;
-export function getFluidContainerRevision(target: FluidContainerTarget): number;
+export function getFluidInputIndices(target: FluidContainerTarget, options?: { face?: DirectionName; automatic?: boolean }): ReadonlyArray<number>;
+export function getFluidOutputIndices(target: FluidContainerTarget, options?: { face?: DirectionName; automatic?: boolean }): ReadonlyArray<number>;
+export function getFluidContainerRevision(target: FluidContainerTarget): number | string;
 export function transferFluid(source: FluidContainerTarget, options: FluidTransferOptions): number;
 export function insertFluid(target: FluidContainerTarget, options: FluidInsertOptions): number;
 export function getFluidStorage(target: FluidContainerTarget, fluidIndex: number): FluidStorage | undefined;
@@ -492,7 +679,8 @@ export const GAS_CONFIG_KEY: "gases";
 export const GAS_CONTAINER_FAMILY: "dorios:gas_container";
 export const GAS_CONFIG_EVENT_NAMESPACE: "dorios_gas";
 export const SET_GAS_CONFIG_EVENT_ID: "dorios_gas:set_config";
-export const DEFAULT_GAS_IO_MODE: "disabled";
+export const DEFAULT_GAS_IO_MODE: "default";
+export const DISABLED_GAS_IO_MODE: "disabled";
 
 export function registerGasIODefinition(blockTypeId: string, value: GasIOGroupConfig): GasIODefinition;
 export function getGasIODefinition(blockTypeId: string): GasIODefinition | undefined;
@@ -501,8 +689,8 @@ export function setGasConfig(entity: Entity, config: GasConfig): boolean;
 export function getGasConfig(entity: Entity): GasConfig | undefined;
 export function getGasConfigRevision(entity: Entity): number;
 export function getGasStatus(entity: Entity): "basic" | "simple" | "complex" | "invalid" | "unsupported";
-export function getInputGasIndices(entity: Entity, options?: { face?: DirectionName }): ReadonlyArray<number>;
-export function getOutputGasIndices(entity: Entity, options?: { face?: DirectionName }): ReadonlyArray<number>;
+export function getInputGasIndices(entity: Entity, options?: { face?: DirectionName; automatic?: boolean }): ReadonlyArray<number>;
+export function getOutputGasIndices(entity: Entity, options?: { face?: DirectionName; automatic?: boolean }): ReadonlyArray<number>;
 export function getGasIODirectionMode(entity: Entity, blockTypeId: string, direction: string): string;
 export function cycleGasIODirectionMode(entity: Entity, blockTypeId: string, direction: string): string;
 export function normalizeGasConfig(value: unknown, count: number): GasConfig;
@@ -512,6 +700,7 @@ export interface ResolvedGasContainer {
   kind: "entity" | "tank";
   block: Block | undefined;
   entity: Entity | undefined;
+  via?: "link_node";
 }
 
 export type GasContainerTarget = Block | Entity | ResolvedGasContainer;
@@ -534,9 +723,9 @@ export interface GasInsertOptions {
 
 export function resolveGasContainer(target: GasContainerTarget): ResolvedGasContainer | undefined;
 export function resolveGasContainerAt(dimension: Dimension, location: Vector3): ResolvedGasContainer | undefined;
-export function getGasInputIndices(target: GasContainerTarget, options?: { face?: DirectionName }): ReadonlyArray<number>;
-export function getGasOutputIndices(target: GasContainerTarget, options?: { face?: DirectionName }): ReadonlyArray<number>;
-export function getGasContainerRevision(target: GasContainerTarget): number;
+export function getGasInputIndices(target: GasContainerTarget, options?: { face?: DirectionName; automatic?: boolean }): ReadonlyArray<number>;
+export function getGasOutputIndices(target: GasContainerTarget, options?: { face?: DirectionName; automatic?: boolean }): ReadonlyArray<number>;
+export function getGasContainerRevision(target: GasContainerTarget): number | string;
 export function transferGas(source: GasContainerTarget, options: GasTransferOptions): number;
 export function insertGas(target: GasContainerTarget, options: GasInsertOptions): number;
 export function getGasStorage(target: GasContainerTarget, gasIndex: number): GasStorage | undefined;
@@ -573,6 +762,8 @@ export class BasicMachine {
   itemIOReady: boolean;
   /** Whether the entity's indexed-fluid Complex config is ready locally. */
   fluidIOReady: boolean;
+  /** Whether the entity's indexed-gas Complex config is ready locally. */
+  gasIOReady: boolean;
 
   /**
    * Creates a base machine runtime for a machine block.
@@ -604,7 +795,7 @@ export class BasicMachine {
   displayProgress(maxValue?: number, options?: ProgressOptions): void;
   /** Draws the current energy bar using the attached {@link EnergyStorage}. */
   displayEnergy(slot?: number): void;
-  /** Processes configured item slots and fluid indices for every enabled face. */
+  /** Processes configured item slots plus fluid and gas indices for every enabled face. */
   processIO(limits?: ProcessIOLimits): ProcessIOSummary;
   /** Fills empty slots with blocker items so players cannot use them. */
   blockSlots(slots: number[]): void;
@@ -664,7 +855,7 @@ export class Machine extends BasicMachine {
  * Runtime class for UtilityCraft generators and batteries.
  *
  * Extends {@link BasicMachine} with generator spawn/destruction logic, adjacent
- * network tagging, and the generator transfer mode UI.
+ * integration tags consumed by UtilityCore, and the generator transfer mode UI.
  */
 export class Generator extends BasicMachine {
   /** Full generator configuration passed into the constructor. */
@@ -680,7 +871,7 @@ export class Generator extends BasicMachine {
   /** Spawns and initializes a generator helper entity from placement data. */
   static spawnEntity(event: PlacementEventLike, config: GeneratorSettings, callback?: (entity: Entity) => void): void;
   /**
-   * Adds six adjacent block positions as network tags on a generator entity.
+   * Adds legacy adjacent-position tags consumed by UtilityCore's network system.
    *
    * @deprecated Network tags are rebuilt through `updatePipes` from real placed
    * energy blocks. Avoid registering all adjacent positions by default.
@@ -755,7 +946,7 @@ export class EnergyStorage {
   /** Receives energy from another entity. */
   receiveFromEntity(entity: Entity, amount: number): number;
   /**
-   * Transfers energy to connected network nodes.
+   * Sends energy to nodes supplied by UtilityCore's network system.
    *
    * Network positions are read from cached dynamic properties/tags and processed
    * according to the selected transfer mode. Stale `pos:`/`net:` tags are removed
@@ -798,7 +989,8 @@ export interface SelectedInventoryItem {
  * Scoreboard-backed fluid storage manager for machines, tanks, and multiblocks.
  *
  * Supports multiple indexed tanks per entity, fluid type tags, item insertion
- * and extraction, fluid bar display, tank spawning, and network transfer.
+ * and extraction, fluid bar display, tank spawning, and integration with
+ * UtilityCore-managed networks.
  */
 export class FluidStorage {
   /** Entity whose fluid values are managed. */
@@ -807,6 +999,13 @@ export class FluidStorage {
   index: number;
   /** Scoreboard identity used by the fluid objectives. */
   scoreId: ScoreboardIdentity | undefined;
+  /** Scoreboard objectives bound to this indexed fluid storage. */
+  scores: {
+    fluid: ScoreboardObjective | undefined;
+    fluidExp: ScoreboardObjective | undefined;
+    fluidCap: ScoreboardObjective | undefined;
+    fluidCapExp: ScoreboardObjective | undefined;
+  };
   /** True when the entity UI is open and display slots should update. */
   shouldUpdateUI: boolean;
   /** Cached fluid type for this tank. */
@@ -857,8 +1056,8 @@ export class FluidStorage {
   static handleFluidItemInteraction(player: Player, entity: Entity, mainHand?: ItemStack): void;
   /** Attempts to insert a fluid type and amount into this tank. */
   tryInsert(type: string, amount: number): boolean;
-  /** Handles a fluid item interaction and returns the output item id or false. */
-  fluidItem(typeId: string): string | false;
+  /** Handles a fluid item interaction and returns an output id, undefined for consumption, or false on failure. */
+  fluidItem(typeId: string): string | undefined | false;
   /** Sets this tank's maximum fluid capacity. */
   setCap(amount: number): void;
   /** Reads and caches this tank's maximum fluid capacity. */
@@ -881,7 +1080,7 @@ export class FluidStorage {
   getType(): string;
   /** Sets the fluid type stored in this tank's entity tags. */
   setType(type: string): void;
-  /** Transfers fluid to connected network nodes using the selected order. */
+  /** Sends fluid to UtilityCore-managed network nodes using the selected order. */
   transferToNetwork(speed: number, mode?: TransferMode, nodes?: Vector3[]): number;
   /** Transfers fluid to the cached fluid output target, clearing stale targets. */
   transferFluids(block: Block, amount?: number): boolean;
@@ -916,6 +1115,12 @@ export class GasStorage {
   entity: Entity;
   index: number;
   scoreId: ScoreboardIdentity | undefined;
+  scores: {
+    gas: ScoreboardObjective | undefined;
+    gasExp: ScoreboardObjective | undefined;
+    gasCap: ScoreboardObjective | undefined;
+    gasCapExp: ScoreboardObjective | undefined;
+  };
   shouldUpdateUI: boolean;
   type: string;
   cap: number;
@@ -942,7 +1147,7 @@ export class GasStorage {
   static findType(entity: Entity, type: string): GasStorage | null;
   static handleGasItemInteraction(player: Player, entity: Entity, mainHand?: ItemStack): void;
   tryInsert(type: string, amount: number): boolean;
-  gasItem(typeId: string): string | false;
+  gasItem(typeId: string): string | undefined | false;
   setCap(amount: number): void;
   getCap(): number;
   set(amount: number): void;
@@ -954,6 +1159,7 @@ export class GasStorage {
   isFull(): boolean;
   getType(): string;
   setType(type: string): void;
+  /** Sends gas to UtilityCore-managed network nodes using the selected order. */
   transferToNetwork(speed: number, mode?: TransferMode, nodes?: Vector3[]): number;
   transferGases(block: Block, amount?: number): boolean;
   transferTo(other: GasStorage, amount: number): number;
@@ -1072,6 +1278,8 @@ export class OutputTracker {
   static isOutputTarget(block: Block | undefined, type: OutputTransferType): boolean;
   /** Reads cached compatibility for all six item/liquid/gas faces. */
   static getIOTargets(entity: Entity | undefined): Record<string, Record<string, boolean>>;
+  /** Returns the adjacent location for one absolute direction. */
+  static getNeighborLocation(block: Block, direction: DirectionName | string): Vector3 | undefined;
   /** Rebuilds cached compatibility for all resources supported by the block. */
   static refreshIOTargets(block: Block | undefined): Record<string, Record<string, boolean>> | undefined;
   /** Refreshes IO target caches on adjacent machine blocks. */
@@ -1105,6 +1313,35 @@ export class Rotation {
   static handleRotation(block: Block, blockFace: DirectionName | string): void;
   /** Applies full 24-direction axis/rotation logic for UtilityCraft blocks. */
   static rotate_24(block: Block, blockFace: DirectionName | string): void;
+}
+
+/** Stored association between one player and the entity container they opened. */
+export interface ContainerSession {
+  playerId: string;
+  playerEntityId?: string;
+  playerName?: string;
+  entityId: string;
+  entityTypeId?: string;
+}
+
+/** A stored container session together with its currently resolvable entities. */
+export interface ContainerSessionEntry {
+  player: Player | undefined;
+  entity: Entity | undefined;
+  session: ContainerSession;
+}
+
+/** Runtime registry for open entity containers and player-specific sessions. */
+export class ContainerSessionManager {
+  static trackEntity(entity?: Entity): boolean;
+  static untrackEntity(entity?: Entity): boolean;
+  static getOpenEntities(): Entity[];
+  static open(player?: Player, entity?: Entity): boolean;
+  static close(player?: Player, entity?: Entity): boolean;
+  static getOpenSession(player?: Player): ContainerSession | undefined;
+  static getOpenSessionEntry(player?: Player): ContainerSessionEntry | undefined;
+  static getOpenEntity(player?: Player): Entity | undefined;
+  static clearPlayer(player?: Player): boolean;
 }
 
 /** Shared template item used to restore button slots after a press is detected. */
@@ -1275,6 +1512,8 @@ export interface MachineStats {
  * multiblock-friendly progress display.
  */
 export class MultiblockMachine extends BasicMachine {
+  /** Base rate from `config.machine.rate_speed_base`, before custom multipliers. */
+  configuredRate: number;
   /** Full multiblock machine config. */
   config: MachineSettings;
   /** Alias for {@link config}. */
@@ -1284,6 +1523,8 @@ export class MultiblockMachine extends BasicMachine {
   static defaultOnInteractWithoutWrench(context: { entity?: Entity; player: Player }): void;
   /** Creates a multiblock machine runtime bound to a controller block. */
   constructor(block: Block, config: MachineSettings);
+  /** Applies a non-compounding multiplier to {@link configuredRate}. */
+  setRateMultiplier(multiplier?: number): void;
   /** Spawns and initializes a multiblock machine controller helper entity. */
   static spawnEntity(event: PlacementEventLike, config: MachineSettings, callback?: (entity: Entity) => void): void;
   /** Shared wrench interaction pipeline for multiblock machine controllers. */
@@ -1315,12 +1556,18 @@ export class MultiblockMachine extends BasicMachine {
   setProgress(value: number, options?: ProgressOptions): void;
   /** Displays progress using the configured multiblock energy cost. */
   displayProgress(options?: ProgressOptions): void;
+  /** Displays progress using an explicit maximum value. */
+  displayProgress(maxValue: number, options?: ProgressOptions): void;
   /** Stores the energy cost used as the default progress maximum. */
   setEnergyCost(value: number, index?: number): void;
   /** Reads the energy cost used as the default progress maximum. */
   getEnergyCost(index?: number): number;
   /** Computes processing, speed, efficiency, and energy multipliers from components. */
   static computeMachineStats(components: Record<string, number>): MachineStats;
+  /** Builds the standard multiblock machine information label without writing it. */
+  static getMachineInfoLabel(data: MachineStats & { cost?: number }, status?: string): string;
+  /** Builds the standard energy information label without writing it. */
+  static getEnergyInfoLabel(controller: MultiblockMachine): string;
   /** Writes the standard multiblock machine information label into the controller UI. */
   static setMachineInfoLabel(controller: MultiblockMachine, data: MachineStats & { cost?: number }, status?: string): string;
 }
@@ -1360,16 +1607,16 @@ export class MultiblockGenerator extends Generator {
   static validateRequirements(components: Record<string, number>, requirements: Record<string, Requirement>): Requirement | undefined;
 }
 
-/** Static scanner for multiblock structures starting from a controller block. */
-export class StructureDetector {
+/** Static scanner API exposed as `Multiblock.StructureDetector`. */
+export interface MultiblockStructureDetector {
   /** Detects and validates a multiblock structure from its controller. */
-  static detectFromController(event: InteractionEventLike, caseTag: string): Promise<false | DetectedStructure>;
+  detectFromController(event: InteractionEventLike, caseTag: string): Promise<false | DetectedStructure>;
   /** Plays a vertical outline particle effect around detected bounds. */
-  static showFormationEffect(bounds: Bounds, dim: Dimension): Promise<void>;
+  showFormationEffect(bounds: Bounds, dim: Dimension): Promise<void>;
   /** Expands outward from a controller position to find casing bounds. */
-  static findMultiblockBounds(start: Vector3, dim: Dimension, caseTag: string): Promise<Bounds | null>;
+  findMultiblockBounds(start: Vector3, dim: Dimension, caseTag: string): Promise<Bounds | null>;
   /** Scans and validates every block inside detected bounds. */
-  static scanStructure(
+  scanStructure(
     min: Vector3,
     max: Vector3,
     dim: Dimension,
@@ -1378,49 +1625,83 @@ export class StructureDetector {
   ): Promise<{ components: Record<string, number>; inputBlocks: string[]; ventBlocks: Vector3[] } | string>;
 }
 
-/** Applies active state and metadata to detected multiblock structures. */
-export class ActivationManager {
+/** Activation helper API exposed as `Multiblock.ActivationManager`. */
+export interface MultiblockActivationManager {
   /** Fills detected bounds layer by layer with a helper block. */
-  static fillBlocks(bounds: Bounds, dim: Dimension, blockId?: string): void;
+  fillBlocks(bounds: Bounds, dim: Dimension, blockId?: string): void;
   /** Activates ports, stores metadata, optionally fills bounds, and applies energy cap. */
-  static activateMultiblock(
+  activateMultiblock(
     entity: Entity,
     structure: Partial<DetectedStructure>,
     fillBlocksConfig?: FillBlocksConfig,
   ): number;
   /** Calculates total energy capacity from component counts. */
-  static calculateEnergyCapacity(components: Record<string, number>): number;
+  calculateEnergyCapacity(components: Record<string, number>): number;
 }
 
-/** Deactivates multiblock structures and cleans controller state. */
-export class DeactivationManager {
+/** Deactivation helper API exposed as `Multiblock.DeactivationManager`. */
+export interface MultiblockDeactivationManager {
   /** Empties previously filled multiblock bounds layer by layer. */
-  static emptyBlocks(entity: Entity, blockId?: string): void;
+  emptyBlocks(entity: Entity, blockId?: string): void;
   /** Deactivates a structure associated with a controller or internal block. */
-  static deactivateMultiblock(block: Block, player?: Player, emptyBlocksConfig?: FillBlocksConfig): Entity | undefined;
+  deactivateMultiblock(block: Block, player?: Player, emptyBlocksConfig?: FillBlocksConfig): Entity | undefined;
   /** Deactivates a multiblock and removes its controller entity shortly after. */
-  static handleBreakController(block: Block, player?: Player, emptyBlocksConfig?: FillBlocksConfig): Entity | undefined;
+  handleBreakController(block: Block, player?: Player, emptyBlocksConfig?: FillBlocksConfig): Entity | undefined;
 }
 
-/** Utility methods for locating and measuring multiblock controller entities. */
-export class EntityManager {
+/** Entity helper API exposed as `Multiblock.EntityManager`. */
+export interface MultiblockEntityManager {
   /** Returns the geometric center of a bounding box. */
-  static getCenter(min: Vector3, max: Vector3): Vector3;
+  getCenter(min: Vector3, max: Vector3): Vector3;
   /** Calculates inclusive volume of a bounding box. */
-  static getVolume(bounds: Bounds): number;
+  getVolume(bounds: Bounds): number;
   /** Returns true when a position lies inside inclusive bounds. */
-  static isInsideBounds(pos: Vector3, bounds: Bounds): boolean;
+  isInsideBounds(pos: Vector3, bounds: Bounds): boolean;
   /** Resolves the controller entity associated with a block. */
-  static getEntityFromBlock(block: Block): Entity | undefined;
+  getEntityFromBlock(block: Block): Entity | undefined;
+}
+
+/** Constants reachable through `Multiblock.Constants`. */
+export interface MultiblockConstants {
+  readonly MAX_SIZE: 99;
+  readonly SCAN_SPEED: 64;
+  readonly ENERGY_PER_UNIT: Readonly<{
+    energy_cell: 4000000;
+    basic_power_condenser_unit: 40000000;
+    advanced_power_condenser_unit: 320000000;
+    expert_power_condenser_unit: 2560000000;
+    ultimate_power_condenser_unit: 64000000000;
+  }>;
+  readonly SHOW_EVENT_ID: "utilitycraft:show";
+  readonly HIDE_EVENT_ID: "utilitycraft:hide";
+  readonly ACTIVE_STATE_ID: "utilitycraft:active";
+  readonly MULTIBLOCK_CASE_TAG_PREFIX: "dorios:multiblock.case";
+  readonly MULTIBLOCK_COMPONENT_TAG: "dorios:multiblock_component";
+  readonly MULTIBLOCK_FAMILY: "dorios:multiblock";
+  readonly VENT_BLOCK_TAG: "dorios:vent_block";
+  readonly ENERGY_BLOCK_TAG: "dorios:energy";
+  readonly FLUID_BLOCK_TAG: "dorios:fluid";
+  readonly ITEM_BLOCK_TAG: "dorios:item";
+  readonly GAS_BLOCK_TAG: "dorios:gas";
+  readonly BOUNDS_PROPERTY_ID: "dorios:bounds";
+  readonly STATE_PROPERTY_ID: "dorios:state";
+  readonly ACTIVE_STATE_VALUE: "on";
+  readonly INACTIVE_STATE_VALUE: "off";
+  readonly RATE_SPEED_PROPERTY_ID: "dorios:rateSpeed";
+  readonly ENERGY_CAP_PROPERTY_ID: "dorios:energyCap";
+  readonly VENT_BLOCKS_PROPERTY_ID: "ventBlocks";
+  readonly LEGACY_REACTOR_STATS_PROPERTY_ID: "reactorStats";
+  /** Event consumed by UtilityCore to refresh its pipe networks. */
+  readonly UPDATE_PIPES_EVENT_ID: "dorios:updatePipes";
 }
 
 /** Public multiblock facade exported by DoriosCore. */
 export const Multiblock: {
-  Constants: Record<string, unknown>;
-  ActivationManager: typeof ActivationManager;
-  DeactivationManager: typeof DeactivationManager;
-  EntityManager: typeof EntityManager;
-  StructureDetector: typeof StructureDetector;
+  Constants: MultiblockConstants;
+  ActivationManager: MultiblockActivationManager;
+  DeactivationManager: MultiblockDeactivationManager;
+  EntityManager: MultiblockEntityManager;
+  StructureDetector: MultiblockStructureDetector;
 };
 
 /** Default helper entity identifier used by UtilityCraft machines. */
@@ -1435,70 +1716,6 @@ export const SET_TICK_SPEED_EVENT_ID: "utilitycraft:set_tick_speed";
 export function addOpenUICount(entity: Entity): number;
 /** Decrements the open UI viewer counter stored on a machine helper entity. */
 export function removeOpenUICount(entity: Entity): number;
-
-/** Shared UtilityCraft text colors used by machine status labels. */
-export const MACHINE_TEXT_COLORS: Record<string, string>;
-/** Placeholder item used to render text labels inside machine inventories. */
-export const LABEL_ITEM_ID: "utilitycraft:arrow_indicator_90";
-/** Blocker item used to reserve inventory slots in machine UIs. */
-export const BLOCKED_SLOT_ITEM_ID: "utilitycraft:arrow_right_0";
-/** Dynamic property prefix used to store machine progress values. */
-export const MACHINE_PROGRESS_PROPERTY_PREFIX: "dorios:progress_";
-/** Dynamic property prefix used to store machine energy cost values. */
-export const MACHINE_ENERGY_COST_PROPERTY_PREFIX: "dorios:energy_cost_";
-/** Default maximum progress value used by machines. */
-export const DEFAULT_PROGRESS_MAX: 800;
-/** Default inventory slot used by machine progress displays. */
-export const DEFAULT_PROGRESS_SLOT: 2;
-/** Default progress item type for the modern progress UI. */
-export const DEFAULT_PROGRESS_TYPE: "progress_right_big_bar";
-/** Default progress item type for the legacy progress UI. */
-export const LEGACY_PROGRESS_TYPE: "arrow_right";
-/** Legacy progress display scale. */
-export const LEGACY_PROGRESS_SCALE: 16;
-/** Modern progress display scale. */
-export const MODERN_PROGRESS_SCALE: 22;
-/** Total amount of visual frames available for energy bar items. */
-export const ENERGY_BAR_FRAME_COUNT: 48;
-/** Item id prefix used by UtilityCraft energy bars. */
-export const ENERGY_BAR_ITEM_PREFIX: "utilitycraft:energy_";
-/** Tag used by entities that should bypass normal resource consumption. */
-export const CREATIVE_TAG: "creative";
-/** Tag used by infinite resource storages whose contents must not be consumed. */
-export const INFINITE_STORAGE_TAG: "dorios:infinite_storage";
-/** Fixed stored amount and capacity assigned to infinite resource storages. */
-export const INFINITE_STORAGE_CAPACITY: 1000000000;
-/** Objective definitions required by the energy storage system. */
-export const ENERGY_OBJECTIVE_DEFINITIONS: readonly [string, string][];
-/** Empty item shown when a fluid tank has no stored content. */
-export const EMPTY_FLUID_BAR_ITEM_ID: "utilitycraft:empty_fluid_bar";
-/** Reserved type marker used by empty fluid tanks. */
-export const EMPTY_FLUID_TYPE: "empty";
-/** Tag used by entities that must keep a fixed fluid type even when empty. */
-export const CONSTANT_FLUID_TYPE_TAG: "dorios:constant_fluid_type";
-/** Names of shared scoreboard objectives used by the fluid system. */
-export const FLUID_OBJECTIVE_NAMES: { readonly maxLiquids: "maxLiquids" };
-/** Command used to bootstrap the base fluid scoreboard identity. */
-export const INITIAL_FLUID_SCORE_COMMAND: "scoreboard players set @s fluid_0 0";
-/** Default inventory slot used to display fluid bars. */
-export const DEFAULT_FLUID_DISPLAY_SLOT: 4;
-/** Total amount of visual frames available for fluid bar items. */
-export const FLUID_BAR_FRAME_COUNT: 48;
-/** Base capacities for UtilityCraft fluid tank blocks. */
-export const FLUID_TANK_CAPACITIES: Record<string, number>;
-/** Empty bar item used by gas storage displays. */
-export const EMPTY_GAS_BAR_ITEM_ID: "utilitycraft:empty_fluid_bar";
-/** Reserved type marker used by empty gas tanks. */
-export const EMPTY_GAS_TYPE: "empty";
-/** Tag used by entities that preserve their gas type while empty. */
-export const CONSTANT_GAS_TYPE_TAG: "dorios:constant_gas_type";
-/** Gas objective names, separate from liquid objectives. */
-export const GAS_OBJECTIVE_NAMES: { readonly maxGases: "maxGases" };
-/** Command used to initialize indexed gas storage. */
-export const INITIAL_GAS_SCORE_COMMAND: "scoreboard players set @s gas_0 0";
-export const DEFAULT_GAS_DISPLAY_SLOT: 4;
-export const GAS_BAR_FRAME_COUNT: 48;
-export const GAS_TANK_CAPACITIES: Record<string, number>;
 
 export const REGISTER_GAS_ITEM_EVENT_ID: "utilitycraft:register_gas_item";
 export const REGISTER_GAS_HOLDER_EVENT_ID: "utilitycraft:register_gas_holder";

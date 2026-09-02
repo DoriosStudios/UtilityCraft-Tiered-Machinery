@@ -177,7 +177,9 @@ export class Machine extends BasicMachine {
         fluids: fluidManagers,
         gases: gasManagers,
       });
-      energyManager.display();
+      if (energyManager.getCap() > 0) {
+        energyManager.display();
+      }
       fluidManagers[0]?.display();
       if (config.machine.gas_cap && config.machine.fluid_cap) {
         entity.triggerEvent("utilitycraft:fluid_gas_machine");
@@ -228,7 +230,10 @@ export class Machine extends BasicMachine {
     }
 
     let moved = 0;
-    const slots = DoriosContainer.getOutputSlots(this.entity, { face: direction });
+    const slots = DoriosContainer.getOutputSlots(this.entity, {
+      face: direction,
+      automatic: true,
+    });
     for (const sourceSlot of slots) {
       moved += DoriosContainer.transfer(this.entity, {
         sourceSlot,
@@ -390,7 +395,6 @@ export class Machine extends BasicMachine {
 
 §r${Constants.MACHINE_TEXT_COLORS.green}Speed x${this.boosts.speed.toFixed(2)}
 §r${Constants.MACHINE_TEXT_COLORS.green}Efficiency x${(1 / this.boosts.consumption).toFixed(2)}
-§r${Constants.MACHINE_TEXT_COLORS.green}Recipe Batch x${Math.max(1, Math.floor(this.boosts.process_batch))}
 §r${Constants.MACHINE_TEXT_COLORS.green}Cost ---
 
 §r${Constants.MACHINE_TEXT_COLORS.red}Rate ${EnergyStorage.formatEnergyToText(Math.floor(this.baseRate))}/t
@@ -412,7 +416,6 @@ export class Machine extends BasicMachine {
 
 §r${Constants.MACHINE_TEXT_COLORS.green}Speed x${this.boosts.speed.toFixed(2)}
 §r${Constants.MACHINE_TEXT_COLORS.green}Efficiency x${(1 / this.boosts.consumption).toFixed(2)}
-§r${Constants.MACHINE_TEXT_COLORS.green}Recipe Batch x${Math.max(1, Math.floor(this.boosts.process_batch))}
 §r${Constants.MACHINE_TEXT_COLORS.green}Cost ${EnergyStorage.formatEnergyToText(this.getEnergyCost() * this.boosts.consumption)}
 
 §r${Constants.MACHINE_TEXT_COLORS.red}Rate ${EnergyStorage.formatEnergyToText(Math.floor(this.baseRate))}/t

@@ -53,9 +53,10 @@ for (const [tier, layout] of Object.entries(TIER_LAYOUTS)) {
         anyInputSlots: layout.inputSlots,
         anyOutputSlots: layout.outputSlots,
         modes: [
-          { id: "disabled" },
+          { id: "default" },
           { id: "input_1", inputSlots: layout.inputSlots },
           { id: "output_1", outputSlots: layout.outputSlots },
+          { id: "disabled" },
         ],
       },
     });
