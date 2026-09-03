@@ -16,6 +16,10 @@ This update modernizes machine placement, refreshes pack presentation and connec
 - Added passive `Default` and explicit `Disabled` states to every machine face, keeping automatic processing disabled in both while exposing the registered input and output slots to external transfers through `Default`.
 - Updated the localized I/O mode descriptions to show `Default` first and `Disabled` last.
 
+## FIXED
+
+- Fixed repeated machine watcher registration restoring pressed interface buttons before their actions could be detected.
+
 ## COMPATIBILITY
 
 - Registered all 12 Tiered Machinery recipes tagged `utilitycraft_workbench` with UtilityCraft's Crafter through DoriosLib.
