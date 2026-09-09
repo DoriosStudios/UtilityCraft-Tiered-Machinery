@@ -17,6 +17,7 @@ This update modernizes machine placement, refreshes pack presentation and connec
 - Updated the localized I/O mode descriptions to show `Default` first and `Disabled` last.
 
 ## FIXED
+- Restricted multiblock entity lookup and deactivation to live dorios:multiblock controllers, preventing hide events and removal from targeting players, dropped items or visual entities.
 
 - Fixed repeated machine watcher registration restoring pressed interface buttons before their actions could be detected.
 
