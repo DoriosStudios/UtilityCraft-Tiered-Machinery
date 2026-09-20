@@ -1,5 +1,11 @@
 # UtilityCraft: Tiered Machinery v1.2.1
 
+## Unreleased
+
+### CHANGED
+
+- Matched original-pack language files to ATA: Quick Info uses the shared `utilitycraft.identifier` label, while item and block tooltips preserve their individual `@Addon` attribution and existing descriptions.
+
 This update modernizes machine placement, refreshes pack presentation and connects Tiered Machinery recipes to UtilityCraft's Crafter.
 
 ## HIGHLIGHTS
