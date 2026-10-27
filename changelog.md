@@ -1,5 +1,7 @@
 # UtilityCraft: Tiered Machinery v1.2.1
 
+Tiered Machinery now requires UtilityCraft 3.6.1 or newer for the updated block-container selection system.
+
 ## UI/UX
 
 - All 12 tiered machines now support UtilityCraft's shared selection switching: interact with their inventories while standing and select their blocks while sneaking, without enlarging entity hitboxes.
