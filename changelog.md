@@ -1,5 +1,9 @@
 # UtilityCraft: Tiered Machinery v1.2.1
 
+## UI/UX
+
+- All 12 tiered machines now support UtilityCraft's shared selection switching: interact with their inventories while standing and select their blocks while sneaking, without enlarging entity hitboxes.
+
 ## Unreleased
 
 ### CHANGED
