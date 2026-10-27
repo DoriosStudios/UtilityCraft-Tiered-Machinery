@@ -1,0 +1,4 @@
+{
+  "description": "A hotfix for machine interaction and item transfers. Requires UtilityCraft 3.6.1 or newer.",
+  "highlights": "- Restored inventory interaction on all 12 machines.\n- Improved Default and Disabled I/O behavior.\n- Fixed machine interface buttons."
+}
