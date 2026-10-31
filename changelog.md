@@ -11,6 +11,7 @@ This hotfix restores machine inventory interaction and improves item-transfer co
 
 ## UI/UX
 
+- Separated item and block names from their descriptive tooltips in every supported language, preserving descriptions, formatting, and addon attribution.
 - Updated I/O mode descriptions to distinguish Default from Disabled.
 - Updated Quick Info labels while preserving each item's and block's addon attribution.
 
